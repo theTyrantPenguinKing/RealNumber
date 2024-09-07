@@ -4,15 +4,21 @@
 using namespace std;
 
 int main(){
-	RealNumber r;
+	RealNumber r, s;
 	
 	cout << "Ingrese un número real: ";
 	cin >> r;
 	
-	cout << r << endl;
+	cout << "Ingrese otro número real: ";
+	cin >> s;
 	
-	cout << "Precisión: " << r.getPrecision() << endl;
-	cout << "Escala: " << r.getScale() << endl;
+	if(r == s){
+		cout << r << " == " << s << endl;
+	}
+	
+	if(r != s){
+		cout << r << " != " << s << endl;
+	}
 	
 	return 0;
 }

@@ -15,6 +15,18 @@ class RealNumber{
 	// sobrecarga del operador de extracción de flujo
 	friend std::istream& operator>>(std::istream&, RealNumber&);
 	
+	// devuelve 0 si los números son iguales, 1 si el primero es mayor al segundo
+	// y -1 si el primero es menor al segundo
+	friend int16_t compare(const RealNumber&, const RealNumber&);
+	
+	// sobrecargas del operador de igualdad
+	friend bool operator==(const std::int64_t, const RealNumber&);
+	friend bool operator==(const std::string&, const RealNumber&);
+	
+	// sobrecargas del operador de desigualdad
+	friend bool operator!=(const std::int64_t, const RealNumber&);
+	friend bool operator!=(const std::string&, const RealNumber&);
+	
 	private:
 		// contiene los dígitos del número real
 		std::deque<uint16_t> digits;
@@ -49,6 +61,12 @@ class RealNumber{
 		
 		// devuelve la cantidad total de dígitos después del punto decimal
 		std::size_t getScale() const ;
+		
+		// sobrecarga del operador de igualdad
+		bool operator==(const RealNumber&) const ;
+		
+		// sobrecarga del operador de desigualdad
+		bool operator!=(const RealNumber&) const ;
 };
 
 #endif
