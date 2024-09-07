@@ -137,6 +137,14 @@ std::size_t RealNumber::getScale() const {
 	return this->scale;
 }
 
+bool RealNumber::operator==(const RealNumber& r) const {
+	return !compare(*this, r);
+}
+
+bool RealNumber::operator!=(const RealNumber& r) const {
+	return compare(*this, r) != 0;
+}
+
 /******************************************************************************
 MÉTODOS PRIVADOS
 ******************************************************************************/
@@ -191,4 +199,92 @@ std::istream& operator>>(std::istream& in, RealNumber& r){
 	r = str;
 	
 	return in;
+}
+
+int16_t compare(const RealNumber& r1, const RealNumber& r2){
+	int16_t cmp = 0;
+	
+	const std::size_t s1 = r1.digits.size() - r1.scale;
+	const std::size_t s2 = r2.digits.size() - r2.scale;
+	
+	std::deque<uint16_t>::const_iterator it1 = r1.digits.begin();
+	std::deque<uint16_t>::const_iterator it2 = r2.digits.begin();
+	
+	if(r1.sign < r2.sign){
+		cmp = -1;
+	}else if(r1.sign > r2.sign){
+		cmp = 1;
+	}else{
+		// ambos números tienen el mismo signo
+		
+		if(r1.sign > 0){
+			if(s1 > s2){
+				cmp = 1;
+			}else if(s1 < s2){
+				cmp = -1;
+			}else{
+				for(; !cmp && it1 != r1.digits.end() && it2 != r2.digits.end(); it1++, it2++){
+					if(*it1 < *it2){
+						cmp = -1;
+					}else if(*it1 > *it2){
+						cmp = 1;
+					}
+				}
+				
+				if(!cmp){
+					if(it1 != r1.digits.end()){
+						cmp = 1;
+					}else if(it2 != r2.digits.end()){
+						cmp = -1;
+					}else{
+						cmp = 0;
+					}
+				}
+			}
+		}else if(r1.sign < 0){
+			if(s1 > s2){
+				cmp = -1;
+			}else if(s1 < s2){
+				cmp = 1;
+			}else{
+				for(; !cmp && it1 != r1.digits.end() && it2 != r2.digits.end(); it1++, it2++){
+					if(*it1 < *it2){
+						cmp = 1;
+					}else if(*it1 > *it2){
+						cmp = -1;
+					}
+				}
+				
+				if(!cmp){
+					if(it1 != r1.digits.end()){
+						cmp = -1;
+					}else if(it2 != r2.digits.end()){
+						cmp = 1;
+					}else{
+						cmp = 0;
+					}
+				}
+			}
+		}else{
+			cmp = 0;
+		}
+	}
+	
+	return cmp;
+}
+
+bool operator==(const std::int64_t num, const RealNumber& r){
+	return !compare(RealNumber(num), r);
+}
+
+bool operator==(const std::string& num, const RealNumber& r){
+	return !compare(RealNumber(num), r);
+}
+
+bool operator!=(const std::int64_t num, const RealNumber& r){
+	return compare(RealNumber(num), r) != 0;
+}
+
+bool operator!=(const std::string& num, const RealNumber& r){
+	return compare(RealNumber(num), r) != 0;
 }
