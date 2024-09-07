@@ -20,5 +20,21 @@ int main(){
 		cout << r << " != " << s << endl;
 	}
 	
+	if(r < s){
+		cout << r << " < " << s << endl;
+	}
+	
+	if(r <= s){
+		cout << r << " <= " << s << endl;
+	}
+	
+	if(r > s){
+		cout << r << " > " << s << endl;
+	}
+	
+	if(r >= s){
+		cout << r << " >= " << s << endl;
+	}
+	
 	return 0;
 }

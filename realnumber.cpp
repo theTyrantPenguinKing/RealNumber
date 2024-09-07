@@ -145,6 +145,22 @@ bool RealNumber::operator!=(const RealNumber& r) const {
 	return compare(*this, r) != 0;
 }
 
+bool RealNumber::operator<(const RealNumber& r) const {
+	return compare(*this, r) < 0;
+}
+
+bool RealNumber::operator<=(const RealNumber& r) const {
+	return compare(*this, r) <= 0;
+}
+
+bool RealNumber::operator>(const RealNumber& r) const {
+	return compare(*this, r) > 0;
+}
+
+bool RealNumber::operator>=(const RealNumber& r) const {
+	return compare(*this, r) >= 0;
+}
+
 /******************************************************************************
 MÉTODOS PRIVADOS
 ******************************************************************************/
@@ -287,4 +303,36 @@ bool operator!=(const std::int64_t num, const RealNumber& r){
 
 bool operator!=(const std::string& num, const RealNumber& r){
 	return compare(RealNumber(num), r) != 0;
+}
+
+bool operator<(const std::int64_t num, const RealNumber& r){
+	return compare(RealNumber(num), r) < 0;
+}
+
+bool operator<(const std::string num, const RealNumber& r){
+	return compare(RealNumber(num), r) < 0;
+}
+
+bool operator<=(const std::int64_t num, const RealNumber& r){
+	return compare(RealNumber(num), r) <= 0;
+}
+
+bool operator<=(const std::string& num, const RealNumber& r){
+	return compare(RealNumber(num), r) <= 0;
+}
+
+bool operator>(const std::int64_t num, const RealNumber& r){
+	return compare(RealNumber(num), r) > 0;
+}
+
+bool operator>(const std::string& num, const RealNumber& r){
+	return compare(RealNumber(num), r) > 0;
+}
+
+bool operator>=(const std::int64_t num, const RealNumber& r){
+	return compare(RealNumber(num), r) >= 0;
+}
+
+bool operator>=(const std::string& num, const RealNumber& r){
+	return compare(RealNumber(num), r) >= 0;
 }
