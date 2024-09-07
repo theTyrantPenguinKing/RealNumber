@@ -27,6 +27,22 @@ class RealNumber{
 	friend bool operator!=(const std::int64_t, const RealNumber&);
 	friend bool operator!=(const std::string&, const RealNumber&);
 	
+	// sobrecargas del operador menor que
+	friend bool operator<(const std::int64_t, const RealNumber&);
+	friend bool operator<(const std::string&, const RealNumber&);
+	
+	// sobrecargas del operador menor o igual que
+	friend bool operator<=(const std::int64_t, const RealNumber&);
+	friend bool operator<=(const std::string&, const RealNumber);
+	
+	// sobrecargas del operador mayor que
+	friend bool operator>(const std::int64_t, const RealNumber&);
+	friend bool operator>(const std::string&, const RealNumber&);
+	
+	// sobrecargas del operador mayor o igual que
+	friend bool operator>=(const std::int64_t, const RealNumber&);
+	friend bool operator>=(const std::string&, const RealNumber);
+	
 	private:
 		// contiene los dígitos del número real
 		std::deque<uint16_t> digits;
@@ -67,6 +83,18 @@ class RealNumber{
 		
 		// sobrecarga del operador de desigualdad
 		bool operator!=(const RealNumber&) const ;
+		
+		// sobrecarga del operador menor que
+		bool operator<(const RealNumber&) const;
+		
+		// sobrecarga del operador menor o igual que
+		bool operator<=(const RealNumber&) const ;
+		
+		// sobrecarga del operador mayor que
+		bool operator>(const RealNumber&) const ;
+		
+		// sobrecarga del operador mayor o igual que
+		bool operator>=(const RealNumber&) const ;
 };
 
 #endif
