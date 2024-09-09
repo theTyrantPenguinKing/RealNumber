@@ -119,10 +119,15 @@ std::string RealNumber::toString() const {
 		str = "-";
 	}
 	
-	for(it = this->digits.begin(); it != this->digits.end(); it++){
-		if(it == afterPoint){
-			str.push_back('.');
-		}
+	for(it = this->digits.begin(); it != afterPoint; it++){
+		str.push_back(*it + '0');
+	}
+	
+	if(it != this->digits.end()){
+		str.push_back('.');
+	}
+	
+	for(; it != this->digits.end(); it++){
 		str.push_back(*it + '0');
 	}
 	
@@ -197,10 +202,14 @@ std::ostream& operator<<(std::ostream& out, const RealNumber& r){
 	if(r.sign < 0){
 		out << "-";
 	}
+	
+	for(; it != afterPoint; it++){
+		out << *it;
+	}
+	if(it != r.digits.end()){
+		out << ".";
+	}
 	for(; it != r.digits.end(); it++){
-		if(it == afterPoint){
-			out << ".";
-		}
 		out << *it;
 	}
 	
