@@ -54,6 +54,8 @@ class RealNumber{
 		// elimina ceros innecesarios al comienzo y final del número real
 		void trimRealNumber();
 		
+		
+		
 	public:
 		// constructores
 		RealNumber();
@@ -95,6 +97,12 @@ class RealNumber{
 		
 		// sobrecarga del operador mayor o igual que
 		bool operator>=(const RealNumber&) const ;
+		
+		// agrega ceros al comienzo del número
+		void addLeadingZeros(const std::size_t);
+		
+		// agrega ceros al final del número
+		void addEndingZeros(const std::size_t);
 };
 
 #endif
