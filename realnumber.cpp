@@ -190,6 +190,19 @@ void RealNumber::trimRealNumber(){
 	}
 }
 
+void RealNumber::addLeadingZeros(std::size_t num_zeros){
+	for(size_t i = 0; i < num_zeros; i++){
+		this->digits.push_front(0);
+	}
+}
+
+void RealNumber::addEndingZeros(std::size_t num_zeros){
+	for(size_t i = 0; i < num_zeros; i++){
+		this->digits.push_back(0);
+		this->scale++;
+	}
+}
+
 /******************************************************************************
 MÉTODOS AMIGO
 ******************************************************************************/
