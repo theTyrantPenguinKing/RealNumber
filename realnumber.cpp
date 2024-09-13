@@ -166,6 +166,21 @@ bool RealNumber::operator>=(const RealNumber& r) const {
 	return compare(*this, r) >= 0;
 }
 
+RealNumber RealNumber::absolute() const {
+	RealNumber a(*this);
+	
+	if(a.sign < 0){
+		a.sign = 1;
+	}
+	return a;
+}
+
+RealNumber RealNumber::operator-() const {
+	RealNumber op(*this);
+	op.sign *= -1;
+	return op;
+}
+
 /******************************************************************************
 MÉTODOS PRIVADOS
 ******************************************************************************/
