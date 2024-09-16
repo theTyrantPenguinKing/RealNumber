@@ -8,6 +8,8 @@
 #include <cctype>
 #include <iterator>
 
+const std::size_t DEFAULT_MAX_SCALE = 9;
+
 class RealNumber{
 	// sobrecarga del operador de inserción de flujo
 	friend std::ostream& operator<<(std::ostream&, const RealNumber&);
@@ -50,6 +52,8 @@ class RealNumber{
 		std::int16_t sign;
 		// cantidad de dígitos después del punto decimal
 		std::size_t scale;
+		// cantidad máxima de dígitos después del punto decimal
+		static std::size_t maxScale;
 		
 		// elimina ceros innecesarios al comienzo y final del número real
 		void trimRealNumber();
@@ -83,6 +87,9 @@ class RealNumber{
 		
 		// devuelve la cantidad total de dígitos después del punto decimal
 		std::size_t getScale() const ;
+		
+		// modifica la cantidad máxima de dígitos después del punto decimal
+		static void setMaxScale(const std::size_t);
 		
 		// sobrecarga del operador de igualdad
 		bool operator==(const RealNumber&) const ;

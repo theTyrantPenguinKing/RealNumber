@@ -10,8 +10,6 @@ int main(){
 	cin >> r;
 	
 	cout << r << endl;
-	cout << "Opuesto de " << r << ": " << -r << endl;
-	cout << "Valor absoluto de " << r << ": " << r.absolute() << endl;
 	
 	return 0;
 }

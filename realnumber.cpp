@@ -4,6 +4,8 @@
 MÉTODOS PÚBLICOS
 ******************************************************************************/
 
+std::size_t RealNumber::maxScale = DEFAULT_MAX_SCALE;
+
 RealNumber::RealNumber(){
 	this->digits.push_back(0);
 	this->sign = 0;
@@ -92,7 +94,7 @@ const RealNumber& RealNumber::operator=(const std::string& str){
 			this->digits.push_back(0);
 		}
 		it++;
-		for(; it != str.end() && isdigit(*it); it++){
+		for(; it != str.end() && isdigit(*it) && this->scale < RealNumber::maxScale; it++){
 			this->digits.push_back(*it - '0');
 			this->scale++;
 		}
@@ -140,6 +142,10 @@ std::size_t RealNumber::getPrecision() const {
 
 std::size_t RealNumber::getScale() const {
 	return this->scale;
+}
+
+void RealNumber::setMaxScale(const std::size_t mScale){
+	RealNumber::maxScale = mScale;
 }
 
 bool RealNumber::operator==(const RealNumber& r) const {
