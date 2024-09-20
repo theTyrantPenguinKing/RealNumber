@@ -91,6 +91,10 @@ class RealNumber{
 		// modifica la cantidad máxima de dígitos después del punto decimal
 		static void setMaxScale(const std::size_t);
 		
+		// devuelve el número real positivo más pequeño posible con la
+		// escala pasada como parámetro
+		static RealNumber getSmallest(const std::size_t);
+		
 		// sobrecarga del operador de igualdad
 		bool operator==(const RealNumber&) const ;
 		

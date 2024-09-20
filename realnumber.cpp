@@ -148,6 +148,24 @@ void RealNumber::setMaxScale(const std::size_t mScale){
 	RealNumber::maxScale = mScale;
 }
 
+RealNumber RealNumber::getSmallest(const std::size_t scale){
+	RealNumber r;
+	
+	// r inicializado a cero, por lo que solo faltan los dígitos después
+	// del punto decimal
+	
+	r.sign = 1;
+	for(std::size_t pos = 1; pos < scale; pos++){
+		r.digits.push_back(0);
+		r.scale++;
+	}
+	
+	r.digits.push_back(1);
+	r.scale++;
+	
+	return r;
+}
+
 bool RealNumber::operator==(const RealNumber& r) const {
 	return !compare(*this, r);
 }
