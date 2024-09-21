@@ -155,10 +155,8 @@ RealNumber RealNumber::getSmallest(const std::size_t scale){
 	// del punto decimal
 	
 	r.sign = 1;
-	for(std::size_t pos = 1; pos < scale; pos++){
-		r.digits.push_back(0);
-		r.scale++;
-	}
+	
+	r.addEndingZeros(scale - 1);
 	
 	r.digits.push_back(1);
 	r.scale++;
