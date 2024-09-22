@@ -4,13 +4,15 @@
 using namespace std;
 
 int main(){
-	
-	RealNumber r;
+	RealNumber r, s;
 	
 	cout << "Ingrese un número real: ";
 	cin >> r;
 	
-	cout << r << endl;
+	cout << "Ingrese otro número real: ";
+	cin >> s;
+	
+	cout << r << " + " << s << " = " << r + s << endl;
 	
 	return 0;
 }

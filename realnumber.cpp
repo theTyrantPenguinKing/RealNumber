@@ -203,6 +203,31 @@ RealNumber RealNumber::operator-() const {
 	return op;
 }
 
+RealNumber RealNumber::operator+(const RealNumber& num) const {
+	RealNumber res;
+	res.scale = (this->scale > num.scale) ? this->scale : num.scale;
+	
+	if(*this == 0){
+		return num;
+	}else if(num == 0){
+		return *this;
+	}
+	
+	if(this->sign == num.sign){
+		res.digits = addition(this->digits, this->scale, num.digits, num.scale);
+		res.sign = this->sign;
+	}else if(this->sign == 1 && num.sign == -1){
+		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.sign = (this->absolute() > num.absolute()) ? 1 : -1;
+	}else if(this->sign == -1 && num.sign == 1){
+		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.sign = (this->absolute() > num.absolute()) ? -1 : 1;
+	}
+	
+	res.trimRealNumber();
+	return res;
+}
+
 /******************************************************************************
 MÉTODOS PRIVADOS
 ******************************************************************************/

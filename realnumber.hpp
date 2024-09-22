@@ -8,6 +8,9 @@
 #include <cctype>
 #include <iterator>
 
+#include "rn_addition.hpp"
+#include "rn_subtraction.hpp"
+
 const std::size_t DEFAULT_MAX_SCALE = 9;
 
 class RealNumber{
@@ -113,11 +116,14 @@ class RealNumber{
 		// sobrecarga del operador mayor o igual que
 		bool operator>=(const RealNumber&) const ;
 		
-		// retorna una copia del valor absoluto del número
+		// devuelve una copia del valor absoluto del número
 		RealNumber absolute() const ;
 		
-		// retorna una copia del opuesto del número
+		// devuelve una copia del opuesto del número
 		RealNumber operator-() const ;
+		
+		// devuelve la suma de dos números
+		RealNumber operator+(const RealNumber&) const ;
 };
 
 #endif

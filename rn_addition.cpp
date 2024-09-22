@@ -1,5 +1,4 @@
 #include "rn_addition.hpp"
-#include <iostream>
 
 std::deque<std::uint16_t> addition(const std::deque<std::uint16_t>& n1, const std::size_t scale1,
 const std::deque<std::uint16_t>& n2, const std::size_t scale2){
