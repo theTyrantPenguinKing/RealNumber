@@ -48,6 +48,14 @@ class RealNumber{
 	friend bool operator>=(const std::int64_t, const RealNumber&);
 	friend bool operator>=(const std::string&, const RealNumber);
 	
+	// sobrecargas del operator+
+	friend RealNumber operator+(const std::int64_t, const RealNumber&);
+	friend RealNumber operator+(const std::string&, const RealNumber&);
+	
+	// sobrecargas del operator-
+	friend RealNumber operator-(const std::int64_t, const RealNumber&);
+	friend RealNumber operator-(const std::string&, const RealNumber&);
+	
 	private:
 		// contiene los dígitos del número real
 		std::deque<uint16_t> digits;
@@ -124,6 +132,9 @@ class RealNumber{
 		
 		// devuelve la suma de dos números
 		RealNumber operator+(const RealNumber&) const ;
+		
+		// devuelve la resta de dos números
+		RealNumber operator-(const RealNumber&) const ;
 };
 
 #endif

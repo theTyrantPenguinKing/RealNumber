@@ -228,6 +228,31 @@ RealNumber RealNumber::operator+(const RealNumber& num) const {
 	return res;
 }
 
+RealNumber RealNumber::operator-(const RealNumber& num) const {
+	RealNumber res;
+	res.scale = (this->scale > num.scale) ? this->scale : num.scale;
+	
+	if(*this == 0){
+		return -num;
+	}else if(num == 0){
+		return *this;
+	}
+	
+	if(this->sign != num.sign){
+		res.digits = addition(this->digits, this->scale, num.digits, num.scale);
+		res.sign = this->sign;
+	}else if(this->sign == 1 && num.sign == 1){
+		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.sign = (this->absolute() > num.absolute()) ? 1 : -1;
+	}else if(this->sign == -1 && num.sign == -1){
+		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.sign = (this->absolute() > num.absolute()) ? -1 : 1;
+	}
+	
+	res.trimRealNumber();
+	return res;
+}
+
 /******************************************************************************
 MÉTODOS PRIVADOS
 ******************************************************************************/
@@ -419,4 +444,20 @@ bool operator>=(const std::int64_t num, const RealNumber& r){
 
 bool operator>=(const std::string& num, const RealNumber& r){
 	return compare(RealNumber(num), r) >= 0;
+}
+
+RealNumber operator+(const std::int64_t op1, const RealNumber& op2){
+	return RealNumber(op1) + op2;
+}
+
+RealNumber operator+(const std::string& op1, const RealNumber& op2){
+	return RealNumber(op1) + op2;
+}
+
+RealNumber operator-(const std::int64_t op1, const RealNumber& op2){
+	return RealNumber(op1) - op2;
+}
+
+RealNumber operator-(const std::string& op1, const RealNumber& op2){
+	return RealNumber(op1) - op2;
 }
