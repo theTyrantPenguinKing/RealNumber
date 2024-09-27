@@ -155,11 +155,8 @@ RealNumber RealNumber::getSmallest(const std::size_t scale){
 	// del punto decimal
 	
 	r.sign = 1;
-	
-	r.addEndingZeros(scale - 1);
-	
-	r.digits.push_back(1);
-	r.scale++;
+	r.digits = smallestNumber(scale);
+	r.scale = scale;
 	
 	return r;
 }
@@ -253,6 +250,30 @@ RealNumber RealNumber::operator-(const RealNumber& num) const {
 	return res;
 }
 
+const RealNumber& RealNumber::operator+=(const RealNumber& num){
+	return *this = *this + num;
+}
+
+const RealNumber& RealNumber::operator+=(const std::int64_t num){
+	return *this = *this + num;
+}
+
+const RealNumber& RealNumber::operator+=(const std::string& num){
+	return *this = *this + num;
+}
+
+const RealNumber& RealNumber::operator-=(const RealNumber& num){
+	return *this = *this - num;
+}
+
+const RealNumber& RealNumber::operator-=(const std::int64_t num){
+	return *this = *this - num;
+}
+
+const RealNumber& RealNumber::operator-=(const std::string& num){
+	return *this = *this - num;
+}
+
 /******************************************************************************
 MÉTODOS PRIVADOS
 ******************************************************************************/
@@ -274,19 +295,6 @@ void RealNumber::trimRealNumber(){
 	// cambiamos el signo a cero
 	if(this->digits.size() == 1 && this->digits.front() == 0){
 		this->sign = 0;
-	}
-}
-
-void RealNumber::addLeadingZeros(std::size_t num_zeros){
-	for(size_t i = 0; i < num_zeros; i++){
-		this->digits.push_front(0);
-	}
-}
-
-void RealNumber::addEndingZeros(std::size_t num_zeros){
-	for(size_t i = 0; i < num_zeros; i++){
-		this->digits.push_back(0);
-		this->scale++;
 	}
 }
 

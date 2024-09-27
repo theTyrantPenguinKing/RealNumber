@@ -10,6 +10,7 @@
 
 #include "rn_addition.hpp"
 #include "rn_subtraction.hpp"
+#include "rn_utils.hpp"
 
 const std::size_t DEFAULT_MAX_SCALE = 9;
 
@@ -68,12 +69,6 @@ class RealNumber{
 		
 		// elimina ceros innecesarios al comienzo y final del número real
 		void trimRealNumber();
-		
-		// agrega ceros al comienzo del número
-		void addLeadingZeros(const std::size_t);
-		
-		// agrega ceros al final del número
-		void addEndingZeros(const std::size_t);
 		
 	public:
 		// constructores
@@ -135,6 +130,16 @@ class RealNumber{
 		
 		// devuelve la resta de dos números
 		RealNumber operator-(const RealNumber&) const ;
+		
+		// suma con asignación
+		const RealNumber& operator+=(const RealNumber&);
+		const RealNumber& operator+=(const std::int64_t);
+		const RealNumber& operator+=(const std::string&);
+		
+		// resta con asignación
+		const RealNumber& operator-=(const RealNumber&);
+		const RealNumber& operator-=(const std::int64_t);
+		const RealNumber& operator-=(const std::string&);
 };
 
 #endif
