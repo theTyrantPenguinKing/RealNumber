@@ -158,6 +158,10 @@ RealNumber RealNumber::getSmallest(const std::size_t scale){
 	r.digits = smallestNumber(scale);
 	r.scale = scale;
 	
+	if(r == 0){
+		r.sign = 0;
+	}
+	
 	return r;
 }
 
