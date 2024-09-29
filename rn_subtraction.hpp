@@ -12,12 +12,13 @@ std::deque<std::uint16_t> complement(const std::deque<std::uint16_t>&);
 
 /*
  * Devuelve la resta de dos números reales representados por los std::deque.
- * El segundo y cuarto parametros son la cantidad de dígitos del número después
- * del punto decimal.
+ * 
+ * PRE: los números tienen la misma cantidad de dígitos
+ *
  * Costo del algoritmo: O(max(n, m)) donde n y m son la cantidad de dígitos de
  * ambos números
  */
-std::deque<std::uint16_t> subtraction(const std::deque<std::uint16_t>&, const std::size_t,
-const std::deque<std::uint16_t>&, const std::size_t);
+std::deque<std::uint16_t> subtraction(const std::deque<std::uint16_t>&,
+const std::deque<std::uint16_t>&);
 
 #endif

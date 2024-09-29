@@ -144,6 +144,41 @@ std::size_t RealNumber::getScale() const {
 	return this->scale;
 }
 
+RealNumber RealNumber::round(const std::size_t nScale) const {
+	RealNumber res = *this;
+	bool add = false;
+	
+	
+	
+	if(nScale < this->scale){		
+		while(res.scale > nScale + 1){
+			res.digits.pop_back();
+			res.scale--;
+		}
+		
+		if(res.digits.back() > 4){
+			add = true;
+		}
+		res.digits.pop_back();
+		res.scale--;
+		
+		if(add){
+			RealNumber min = RealNumber::getSmallest(nScale);
+			if(nScale == 0){
+				min = 1;
+			}
+			
+			min.sign = res.sign;
+			
+			res = res + min;
+		}
+	}
+	
+	res.trimRealNumber();
+	
+	return res;
+}
+
 void RealNumber::setMaxScale(const std::size_t mScale){
 	RealNumber::maxScale = mScale;
 }
@@ -214,14 +249,28 @@ RealNumber RealNumber::operator+(const RealNumber& num) const {
 		return *this;
 	}
 	
+	std::deque<std::uint16_t> a, b;
+	
+	a = this->digits;
+	b = num.digits;
+	
+	std::size_t df;
+	if(this->scale < num.scale){
+		df = num.scale - this->scale;
+		a = addEndingZeros(a, df);
+	}else if(num.scale < this->scale){
+		df = this->scale - num.scale;
+		b = addEndingZeros(b, df);
+	}
+	
 	if(this->sign == num.sign){
-		res.digits = addition(this->digits, this->scale, num.digits, num.scale);
+		res.digits = addition(a, b);
 		res.sign = this->sign;
 	}else if(this->sign == 1 && num.sign == -1){
-		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.digits = subtraction(a, b);
 		res.sign = (this->absolute() > num.absolute()) ? 1 : -1;
 	}else if(this->sign == -1 && num.sign == 1){
-		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.digits = subtraction(a, b);
 		res.sign = (this->absolute() > num.absolute()) ? -1 : 1;
 	}
 	
@@ -239,14 +288,28 @@ RealNumber RealNumber::operator-(const RealNumber& num) const {
 		return *this;
 	}
 	
+	std::deque<std::uint16_t> a, b;
+	
+	a = this->digits;
+	b = num.digits;
+	
+	std::size_t df;
+	if(this->scale < num.scale){
+		df = num.scale - this->scale;
+		a = addEndingZeros(a, df);
+	}else if(num.scale < this->scale){
+		df = this->scale - num.scale;
+		b = addEndingZeros(b, df);
+	}
+	
 	if(this->sign != num.sign){
-		res.digits = addition(this->digits, this->scale, num.digits, num.scale);
+		res.digits = addition(a, b);
 		res.sign = this->sign;
 	}else if(this->sign == 1 && num.sign == 1){
-		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.digits = subtraction(a, b);
 		res.sign = (this->absolute() > num.absolute()) ? 1 : -1;
 	}else if(this->sign == -1 && num.sign == -1){
-		res.digits = subtraction(this->digits, this->scale, num.digits, num.scale);
+		res.digits = subtraction(a, b);
 		res.sign = (this->absolute() > num.absolute()) ? -1 : 1;
 	}
 	

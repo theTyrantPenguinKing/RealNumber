@@ -22,32 +22,20 @@ std::deque<std::uint16_t> complement(const std::deque<std::uint16_t>& num){
 	return res;
 }
 
-std::deque<uint16_t> subtraction(const std::deque<std::uint16_t>& n1, const std::size_t scale1,
-const std::deque<std::uint16_t>& n2, const std::size_t scale2){
+std::deque<uint16_t> subtraction(const std::deque<std::uint16_t>& n1,
+const std::deque<std::uint16_t>& n2){
 	std::deque<std::uint16_t> res, aux;
 	
 	std::deque<std::uint16_t>::const_reverse_iterator it1, it2;
 	
 	aux = complement(n2);
 	
-	while(aux.size() - scale2 < n1.size() - scale1){
+	while(aux.size() < n1.size()){
 		aux.push_front(9);
 	}
 	
 	it1 = n1.rbegin();
 	it2 = aux.rbegin();
-	
-	if(scale1 > scale2){
-		std::size_t dif = scale1 - scale2;
-		for(std::size_t i = 0; i < dif && it1 != n1.rend(); i++, it1++){
-			res.push_front(*it1);
-		}
-	}else if(scale2 > scale1){
-		std::size_t dif = scale2 - scale1;
-		for(std::size_t i = 0; i < dif && it2 != aux.rend(); i++, it2++){
-			res.push_front(*it2);
-		}
-	}
 	
 	std::uint16_t carry = 0, val;
 	for(; it1 != n1.rend() && it2 != aux.rend(); it1++, it2++){

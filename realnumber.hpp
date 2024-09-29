@@ -94,12 +94,17 @@ class RealNumber{
 		// devuelve la cantidad total de dígitos después del punto decimal
 		std::size_t getScale() const ;
 		
+		// devuelve el número redondeado a la cantidad de dígitos especificada
+		// de dígitos
+		RealNumber round(const std::size_t) const ;
+		
 		// modifica la cantidad máxima de dígitos después del punto decimal
 		static void setMaxScale(const std::size_t);
 		
 		// devuelve el número real positivo más pequeño posible con la
 		// escala pasada como parámetro
 		static RealNumber getSmallest(const std::size_t);
+		
 		
 		// sobrecarga del operador de igualdad
 		bool operator==(const RealNumber&) const ;

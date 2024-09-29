@@ -4,7 +4,7 @@
 using namespace std;
 
 int main(){
-	RealNumber r, s;
+	RealNumber r, s, suma;
 	
 	cout << "Ingrese un número real: ";
 	cin >> r;
@@ -12,11 +12,10 @@ int main(){
 	cout << "Ingrese otro número real: ";
 	cin >> s;
 	
-	cout << r << " + " << s << " = " << r + s << endl;
+	suma = r + s;
+	cout << r << " + " << s << " = " << suma << endl;
 	
-	cout << r << " - " << s << " = " << r - s << endl;
-	
-	cout << s << " - " << r << " = " << s - r << endl;
+	cout << "Número redondeado a dos dígitos después del punto decimal: " << suma.round(2) << std::endl;
 	
 	return 0;
 }
