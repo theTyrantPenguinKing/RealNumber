@@ -1,54 +1,40 @@
 #include "realnumber.hpp"
 
-/******************************************************************************
-MÉTODOS PÚBLICOS
-******************************************************************************/
-
-std::size_t RealNumber::maxScale = DEFAULT_MAX_SCALE;
-
 RealNumber::RealNumber(){
 	this->digits.push_back(0);
 	this->sign = 0;
-	this->scale = 0;
+	this->precision = 0;
 }
 
 RealNumber::RealNumber(const std::int64_t num){
 	*this = num;
 }
 
-RealNumber::RealNumber(const std::string& str){
-	*this = str;
+RealNumber::RealNumber(const std::string& num){
+	*this = num;
 }
 
-RealNumber::RealNumber(const RealNumber& r){
-	this->digits = r.digits;
-	this->sign = r.sign;
-	this->scale = r.scale;
+RealNumber::RealNumber(const RealNumber& num){
+	this->digits = num.digits;
+	this->sign = num.sign;
+	this->precision = num.precision;
 }
 
 RealNumber::~RealNumber(){
 	this->digits.clear();
-}
-
-const RealNumber& RealNumber::operator=(const RealNumber& r){
-	if(this != &r){	// evita auto-asignación
-		this->digits = r.digits;
-		this->sign = r.sign;
-		this->scale = r.scale;
-	}
-	return *this;
+	this->sign = 0;
+	this->precision = 0;
 }
 
 const RealNumber& RealNumber::operator=(const std::int64_t num){
+	this->digits.clear();
+	this->precision = 0;
 	std::int64_t aux = std::abs(num);
 	
-	this->digits.clear();
-	this->scale = 0;
-	
-	if(num < 0){
-		this->sign = -1;
-	}else if(num > 0){
+	if(num > 0){
 		this->sign = 1;
+	}else if(num < 0){
+		this->sign = -1;
 	}else{
 		this->sign = 0;
 	}
@@ -61,478 +47,351 @@ const RealNumber& RealNumber::operator=(const std::int64_t num){
 	return *this;
 }
 
-const RealNumber& RealNumber::operator=(const std::string& str){
-	std::string::const_iterator it;
-	
+const RealNumber& RealNumber::operator=(const std::string& num){
 	this->digits.clear();
-	// el número nuevo es positivo hasta que se demuestre lo contrario
-	this->sign = 1;
-	this->scale = 0;
+	this->sign = 0;
+	this->precision = 0;
 	
-	it = str.begin();
-	
-	// ignoramos los espacios en blanco
-	for(; it != str.end() && isblank(*it); it++);
-	
-	if(it != str.end() && *it == '+'){
-		it++;
-	}else if(it != str.end() && *it == '-'){
-		this->sign = -1;
-		it++;
-	}
-	
-	// ignoramos los ceros al comienzo del número real
-	for(; it != str.end() && *it == '0'; it++);
-	
-	for(; it != str.end() && isdigit(*it); it++){
-		this->digits.push_back(*it - '0');
-	}
-	
-	if(it != str.end() && *it == '.'){
-		if(this->digits.empty()){
-			// insertamos un cero antes del punto decimal
-			this->digits.push_back(0);
-		}
-		it++;
-		for(; it != str.end() && isdigit(*it) && this->scale < RealNumber::maxScale; it++){
-			this->digits.push_back(*it - '0');
-			this->scale++;
-		}
-	}
-	
-	if(this->digits.empty()){
+	if(num.empty()){
 		this->digits.push_back(0);
-		this->sign = 0;
-		this->scale = 0;
+	}else{
+		// the number is positive for now
+		this->sign = 1;
+		
+		std::string::const_iterator it = num.begin();
+		
+		// skip initial blank spaces
+		for(; it != num.end() && isblank(*it); it++);
+		
+		if(it != num.end()){
+			if(*it == '+'){
+				it++;
+			}else if(*it == '-'){
+				this->sign = -1;
+				it++;
+			}
+			
+			// skip initial zeros
+			for(; it != num.end() && *it == '0'; it++);
+			
+			for(; it != num.end() && isdigit(*it); it++){
+				this->digits.push_back(*it - '0');
+			}
+			
+			if(it != num.end() && *it == '.'){
+				if(this->digits.empty()){
+					this->digits.push_front(0);
+				}
+				it++;
+				for(; it != num.end(); it++){
+					this->digits.push_back(*it - '0');
+					this->precision++;
+				}
+			}
+		}
 	}
 	
-	this->trimRealNumber();
+	this->trim();
 	
 	return *this;
 }
 
-std::string RealNumber::toString() const {
-	std::string str;
-	std::deque<std::uint16_t>::const_iterator it;
-	std::deque<std::uint16_t>::const_iterator afterPoint = this->digits.begin();
-	std::advance(afterPoint, this->getPrecision() - this->getScale());
-	
-	if(this->sign < 0){
-		str = "-";
+const RealNumber& RealNumber::operator=(const RealNumber& num){
+	if(this != &num){
+		this->digits = num.digits;
+		this->sign = num.sign;
+		this->precision = num.precision;
 	}
 	
-	for(it = this->digits.begin(); it != afterPoint; it++){
-		str.push_back(*it + '0');
-	}
-	
-	if(it != this->digits.end()){
-		str.push_back('.');
-	}
-	
-	for(; it != this->digits.end(); it++){
-		str.push_back(*it + '0');
-	}
-	
-	return str;
+	return *this;
+}
+
+std::size_t RealNumber::getMantissa() const {
+	return this->digits.size() - this->precision;
 }
 
 std::size_t RealNumber::getPrecision() const {
-	return this->digits.size();
+	return this->precision;
 }
 
-std::size_t RealNumber::getScale() const {
-	return this->scale;
+bool RealNumber::operator==(const RealNumber& num) const {
+	return this->sign == num.sign && RealNumber::compare(*this, num) == 0;
 }
 
-RealNumber RealNumber::round(const std::size_t nScale) const {
-	RealNumber res = *this;
-	bool add = false;
-	
-	
-	
-	if(nScale < this->scale){		
-		while(res.scale > nScale + 1){
-			res.digits.pop_back();
-			res.scale--;
-		}
-		
-		if(res.digits.back() > 4){
-			add = true;
-		}
-		res.digits.pop_back();
-		res.scale--;
-		
-		if(add){
-			RealNumber min = RealNumber::getSmallest(nScale);
-			if(nScale == 0){
-				min = 1;
-			}
-			
-			min.sign = res.sign;
-			
-			res = res + min;
-		}
-	}
-	
-	res.trimRealNumber();
-	
-	return res;
+bool RealNumber::operator!=(const RealNumber& num) const {
+	return this->sign != num.sign || RealNumber::compare(*this, num) != 0;
 }
 
-void RealNumber::setMaxScale(const std::size_t mScale){
-	RealNumber::maxScale = mScale;
-}
-
-RealNumber RealNumber::getSmallest(const std::size_t scale){
-	RealNumber r;
+bool RealNumber::operator<(const RealNumber& num) const {
+	bool lt;
+	std::int16_t cmp;
 	
-	// r inicializado a cero, por lo que solo faltan los dígitos después
-	// del punto decimal
-	
-	r.sign = 1;
-	r.digits = smallestNumber(scale);
-	r.scale = scale;
-	
-	if(r == 0){
-		r.sign = 0;
-	}
-	
-	return r;
-}
-
-bool RealNumber::operator==(const RealNumber& r) const {
-	return !compare(*this, r);
-}
-
-bool RealNumber::operator!=(const RealNumber& r) const {
-	return compare(*this, r) != 0;
-}
-
-bool RealNumber::operator<(const RealNumber& r) const {
-	return compare(*this, r) < 0;
-}
-
-bool RealNumber::operator<=(const RealNumber& r) const {
-	return compare(*this, r) <= 0;
-}
-
-bool RealNumber::operator>(const RealNumber& r) const {
-	return compare(*this, r) > 0;
-}
-
-bool RealNumber::operator>=(const RealNumber& r) const {
-	return compare(*this, r) >= 0;
-}
-
-RealNumber RealNumber::absolute() const {
-	RealNumber a(*this);
-	
-	if(a.sign < 0){
-		a.sign = 1;
-	}
-	return a;
-}
-
-RealNumber RealNumber::operator-() const {
-	RealNumber op(*this);
-	op.sign *= -1;
-	return op;
-}
-
-RealNumber RealNumber::operator+(const RealNumber& num) const {
-	RealNumber res;
-	res.scale = (this->scale > num.scale) ? this->scale : num.scale;
-	
-	if(*this == 0){
-		return num;
-	}else if(num == 0){
-		return *this;
-	}
-	
-	std::deque<std::uint16_t> a, b;
-	
-	a = this->digits;
-	b = num.digits;
-	
-	std::size_t df;
-	if(this->scale < num.scale){
-		df = num.scale - this->scale;
-		a = addEndingZeros(a, df);
-	}else if(num.scale < this->scale){
-		df = this->scale - num.scale;
-		b = addEndingZeros(b, df);
-	}
-	
-	if(this->sign == num.sign){
-		res.digits = addition(a, b);
-		res.sign = this->sign;
-	}else if(this->sign == 1 && num.sign == -1){
-		res.digits = subtraction(a, b);
-		res.sign = (this->absolute() > num.absolute()) ? 1 : -1;
-	}else if(this->sign == -1 && num.sign == 1){
-		res.digits = subtraction(a, b);
-		res.sign = (this->absolute() > num.absolute()) ? -1 : 1;
-	}
-	
-	res.trimRealNumber();
-	return res;
-}
-
-RealNumber RealNumber::operator-(const RealNumber& num) const {
-	RealNumber res;
-	res.scale = (this->scale > num.scale) ? this->scale : num.scale;
-	
-	if(*this == 0){
-		return -num;
-	}else if(num == 0){
-		return *this;
-	}
-	
-	std::deque<std::uint16_t> a, b;
-	
-	a = this->digits;
-	b = num.digits;
-	
-	std::size_t df;
-	if(this->scale < num.scale){
-		df = num.scale - this->scale;
-		a = addEndingZeros(a, df);
-	}else if(num.scale < this->scale){
-		df = this->scale - num.scale;
-		b = addEndingZeros(b, df);
-	}
-	
-	if(this->sign != num.sign){
-		res.digits = addition(a, b);
-		res.sign = this->sign;
-	}else if(this->sign == 1 && num.sign == 1){
-		res.digits = subtraction(a, b);
-		res.sign = (this->absolute() > num.absolute()) ? 1 : -1;
-	}else if(this->sign == -1 && num.sign == -1){
-		res.digits = subtraction(a, b);
-		res.sign = (this->absolute() > num.absolute()) ? -1 : 1;
-	}
-	
-	res.trimRealNumber();
-	return res;
-}
-
-const RealNumber& RealNumber::operator+=(const RealNumber& num){
-	return *this = *this + num;
-}
-
-const RealNumber& RealNumber::operator+=(const std::int64_t num){
-	return *this = *this + num;
-}
-
-const RealNumber& RealNumber::operator+=(const std::string& num){
-	return *this = *this + num;
-}
-
-const RealNumber& RealNumber::operator-=(const RealNumber& num){
-	return *this = *this - num;
-}
-
-const RealNumber& RealNumber::operator-=(const std::int64_t num){
-	return *this = *this - num;
-}
-
-const RealNumber& RealNumber::operator-=(const std::string& num){
-	return *this = *this - num;
-}
-
-/******************************************************************************
-MÉTODOS PRIVADOS
-******************************************************************************/
-
-void RealNumber::trimRealNumber(){
-	// eliminamos los ceros al comienzo del número hasta que solo quede un
-	// dígito antes del punto decimal
-	while(this->digits.size() > this->scale + 1 && this->digits.front() == 0){
-		this->digits.pop_front();
-	}
-	
-	// elimina los ceros al final del número hasta que no queden ceros
-	// después del punto decimal
-	while(this->scale && this->digits.back() == 0){
-		this->digits.pop_back();
-		this->scale--;
-	}
-	
-	// cambiamos el signo a cero
-	if(this->digits.size() == 1 && this->digits.front() == 0){
-		this->sign = 0;
-	}
-}
-
-/******************************************************************************
-MÉTODOS AMIGO
-******************************************************************************/
-
-std::ostream& operator<<(std::ostream& out, const RealNumber& r){
-	std::deque<std::uint16_t>::const_iterator it = r.digits.begin();
-	std::deque<std::uint16_t>::const_iterator afterPoint = r.digits.begin();
-	std::advance(afterPoint, r.getPrecision() - r.getScale());
-	
-	if(r.sign < 0){
-		out << "-";
-	}
-	
-	for(; it != afterPoint; it++){
-		out << *it;
-	}
-	if(it != r.digits.end()){
-		out << ".";
-	}
-	for(; it != r.digits.end(); it++){
-		out << *it;
-	}
-	
-	return out;
-}
-
-std::istream& operator>>(std::istream& in, RealNumber& r){
-	std::string str;
-	
-	std::getline(in, str);
-	
-	r = str;
-	
-	return in;
-}
-
-int16_t compare(const RealNumber& r1, const RealNumber& r2){
-	int16_t cmp = 0;
-	
-	const std::size_t s1 = r1.digits.size() - r1.scale;
-	const std::size_t s2 = r2.digits.size() - r2.scale;
-	
-	std::deque<uint16_t>::const_iterator it1 = r1.digits.begin();
-	std::deque<uint16_t>::const_iterator it2 = r2.digits.begin();
-	
-	if(r1.sign < r2.sign){
-		cmp = -1;
-	}else if(r1.sign > r2.sign){
-		cmp = 1;
+	if(this->sign < num.sign){
+		lt = true;
+	}else if(this->sign > num.sign){
+		lt = false;
 	}else{
-		// ambos números tienen el mismo signo
-		
-		if(r1.sign > 0){
-			if(s1 > s2){
-				cmp = 1;
-			}else if(s1 < s2){
-				cmp = -1;
+		cmp = RealNumber::compare(*this, num);
+		if(this->sign > 0){
+			if(cmp < 0){
+				lt = true;
 			}else{
-				for(; !cmp && it1 != r1.digits.end() && it2 != r2.digits.end(); it1++, it2++){
-					if(*it1 < *it2){
-						cmp = -1;
-					}else if(*it1 > *it2){
-						cmp = 1;
-					}
-				}
-				
-				if(!cmp){
-					if(it1 != r1.digits.end()){
-						cmp = 1;
-					}else if(it2 != r2.digits.end()){
-						cmp = -1;
-					}else{
-						cmp = 0;
-					}
-				}
+				lt = false;
 			}
-		}else if(r1.sign < 0){
-			if(s1 > s2){
-				cmp = -1;
-			}else if(s1 < s2){
-				cmp = 1;
+		}else if(this->sign < 0){
+			if(cmp > 0){
+				lt = true;
 			}else{
-				for(; !cmp && it1 != r1.digits.end() && it2 != r2.digits.end(); it1++, it2++){
-					if(*it1 < *it2){
-						cmp = 1;
-					}else if(*it1 > *it2){
-						cmp = -1;
-					}
-				}
-				
-				if(!cmp){
-					if(it1 != r1.digits.end()){
-						cmp = -1;
-					}else if(it2 != r2.digits.end()){
-						cmp = 1;
-					}else{
-						cmp = 0;
-					}
-				}
+				lt = false;
 			}
 		}else{
-			cmp = 0;
+			lt = false;
+		}
+	}
+	
+	return lt;
+}
+
+bool RealNumber::operator<=(const RealNumber& num) const {
+	bool lteq;
+	std::int16_t cmp;
+	
+	if(this->sign < num.sign){
+		lteq = true;
+	}else if(this->sign > num.sign){
+		lteq = false;
+	}else{
+		cmp =  RealNumber::compare(*this, num);
+		
+		if(this->sign > 0){
+			if(cmp <= 0){
+				lteq = true;
+			}else{
+				lteq = false;
+			}
+		}else if(this->sign < 0){
+			if(cmp >= 0){
+				lteq = true;
+			}else{
+				lteq = false;
+			}
+		}else{
+			lteq = true;
+		}
+	}
+	
+	return lteq;
+}
+
+bool RealNumber::operator>(const RealNumber& num) const {
+	bool gt;
+	std::int16_t cmp;
+	
+	if(this->sign > num.sign){
+		gt = true;
+	}else if(this->sign < num.sign){
+		gt = false;
+	}else{
+		cmp = RealNumber::compare(*this, num);
+		
+		if(this->sign > 0){
+			if(cmp > 0){
+				gt = true;
+			}else{
+				gt = false;
+			}
+		}else if(this->sign < 0){
+			if(cmp < 0){
+				gt = true;
+			}else{
+				gt = false;
+			}
+		}else{
+			gt = false;
+		}
+	}
+	
+	return gt;
+}
+
+bool RealNumber::operator>=(const RealNumber& num) const {
+	bool gteq;
+	std::int16_t cmp;
+	
+	if(this->sign > num.sign){
+		gteq = true;
+	}else if(this->sign < num.sign){
+		gteq = false;
+	}else{
+		cmp = RealNumber::compare(*this, num);
+		
+		if(this->sign > 0){
+			if(cmp >= 0){
+				gteq = true;
+			}else{
+				gteq = false;
+			}
+		}else if(this->sign < 0){
+			if(cmp <= 0){
+				gteq = true;
+			}else{
+				gteq = false;
+			}
+		}else{
+			gteq = true;
+		}
+	}
+	
+	return gteq;
+}
+
+/******************************************************************************
+PRIVATE METHODS
+******************************************************************************/
+
+void RealNumber::trim(){
+	if(this->digits.empty()){
+		this->digits.push_back(0);
+ 		this->precision = 0;
+ 		this->sign = 0;
+ 	}
+ 	
+ 	while(this->digits.size() > this->precision + 1 &&
+ 	this->digits.front() == 0){
+ 		this->digits.pop_front();
+ 	}
+ 	
+ 	while(this->precision && this->digits.back() == 0){
+ 		this->digits.pop_back();
+ 		this->precision--;
+ 	}
+ 	
+ 	if(this->digits.size() == 1 && this->digits.front() == 0){
+ 		this->sign = 0;
+ 	}
+}
+
+std::int16_t RealNumber::compare(const RealNumber& n1, const RealNumber& n2){
+	std::int16_t cmp = 0;
+	const std::size_t s1 = n1.digits.size() - n1.precision;
+	const std::size_t s2 = n2.digits.size() - n2.precision;
+	bool exit = false;
+	
+	if(s1 > s2){
+		cmp = 1;
+	}else if(s1 < s2){
+		cmp = -1;
+	}else{
+		std::deque<std::uint16_t>::const_iterator it1, it2;
+		
+		it1 = n1.digits.begin();
+		it2 = n2.digits.begin();
+		
+		for(; !exit && it1 != n1.digits.end() && it2 != n2.digits.end()
+		; it1++, it2++){
+			if(*it1 > *it2){
+				cmp = 1;
+				exit = true;
+			}else if(*it1 < *it2){
+				cmp = -1;
+				exit = true;
+			}
+		}
+		
+		if(!exit){
+			if(it1 != n1.digits.end()){
+				cmp = 1;
+			}else if(it2 != n2.digits.end()){
+				cmp = -1;
+			}else{
+				cmp = 0;
+			}
 		}
 	}
 	
 	return cmp;
 }
 
-bool operator==(const std::int64_t num, const RealNumber& r){
-	return !compare(RealNumber(num), r);
+/******************************************************************************
+FRIEND METHODS
+******************************************************************************/
+
+std::ostream& operator<<(std::ostream& out, const RealNumber& num){
+	if(num.sign == -1){
+		out << "-";
+	}
+	
+	std::deque<std::uint16_t>::const_iterator it, afterPoint;
+	afterPoint = num.digits.begin();
+	std::advance(afterPoint, num.digits.size() - num.precision);
+	
+	for(it = num.digits.begin(); it != afterPoint; it++){
+		out << *it;
+	}
+	
+	if(it != num.digits.end()){
+		out << ".";
+		for(; it != num.digits.end(); it++){
+			out << *it;
+		}
+	}
+	
+	return out;
 }
 
-bool operator==(const std::string& num, const RealNumber& r){
-	return !compare(RealNumber(num), r);
+std::istream& operator>>(std::istream& in, RealNumber& num){
+	std::string s;
+	std::getline(in, s);
+	
+	num = s;
+	
+	return in;
 }
 
-bool operator!=(const std::int64_t num, const RealNumber& r){
-	return compare(RealNumber(num), r) != 0;
+bool operator==(const std::int64_t n1, const RealNumber& n2){
+	return RealNumber(n1) == n2;
 }
 
-bool operator!=(const std::string& num, const RealNumber& r){
-	return compare(RealNumber(num), r) != 0;
+bool operator==(const std::string& n1, const RealNumber& n2){
+	return RealNumber(n1) == n2;
 }
 
-bool operator<(const std::int64_t num, const RealNumber& r){
-	return compare(RealNumber(num), r) < 0;
+bool operator!=(const std::int64_t n1, const RealNumber& n2){
+	return RealNumber(n1) != n2;
 }
 
-bool operator<(const std::string num, const RealNumber& r){
-	return compare(RealNumber(num), r) < 0;
+bool operator!=(const std::string& n1, const RealNumber& n2){
+	return RealNumber(n1) != n2;
 }
 
-bool operator<=(const std::int64_t num, const RealNumber& r){
-	return compare(RealNumber(num), r) <= 0;
+bool operator<(const std::int64_t n1, const RealNumber& n2){
+	return RealNumber(n1) < n2;
 }
 
-bool operator<=(const std::string& num, const RealNumber& r){
-	return compare(RealNumber(num), r) <= 0;
+bool operator<(const std::string& n1, const RealNumber& n2){
+	return RealNumber(n1) < n2;
 }
 
-bool operator>(const std::int64_t num, const RealNumber& r){
-	return compare(RealNumber(num), r) > 0;
+bool operator<=(const std::int64_t n1, const RealNumber& n2){
+	return RealNumber(n1) <= n2;
 }
 
-bool operator>(const std::string& num, const RealNumber& r){
-	return compare(RealNumber(num), r) > 0;
+bool operator<=(const std::string& n1, const RealNumber& n2){
+	return RealNumber(n1) <= n2;
 }
 
-bool operator>=(const std::int64_t num, const RealNumber& r){
-	return compare(RealNumber(num), r) >= 0;
+bool operator>(const std::int64_t n1, const RealNumber& n2){
+	return RealNumber(n1) > n2;
 }
 
-bool operator>=(const std::string& num, const RealNumber& r){
-	return compare(RealNumber(num), r) >= 0;
+bool operator>(const std::string& n1, const RealNumber& n2){
+	return RealNumber(n1) > n2;
 }
 
-RealNumber operator+(const std::int64_t op1, const RealNumber& op2){
-	return RealNumber(op1) + op2;
+bool operator>=(const std::int64_t n1, const RealNumber& n2){
+	return RealNumber(n1) < n2;
 }
 
-RealNumber operator+(const std::string& op1, const RealNumber& op2){
-	return RealNumber(op1) + op2;
-}
-
-RealNumber operator-(const std::int64_t op1, const RealNumber& op2){
-	return RealNumber(op1) - op2;
-}
-
-RealNumber operator-(const std::string& op1, const RealNumber& op2){
-	return RealNumber(op1) - op2;
+bool operator>=(const std::string& n1, const RealNumber& n2){
+	return RealNumber(n1) < n2;
 }

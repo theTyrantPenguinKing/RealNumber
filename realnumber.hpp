@@ -1,150 +1,95 @@
-#ifndef REALNUMBER_H
-#define REALNUMBER_H
+#ifndef REALNUMBER_HPP
+#define REALNUMBER_HPP
 
 #include <iostream>
-#include <cinttypes>
-#include <deque>
 #include <string>
-#include <cctype>
+#include <deque>
+#include <cinttypes>
 #include <iterator>
-
-#include "rn_addition.hpp"
-#include "rn_subtraction.hpp"
-#include "rn_utils.hpp"
-
-const std::size_t DEFAULT_MAX_SCALE = 9;
+#include <cctype>
 
 class RealNumber{
-	// sobrecarga del operador de inserción de flujo
 	friend std::ostream& operator<<(std::ostream&, const RealNumber&);
 	
-	// sobrecarga del operador de extracción de flujo
 	friend std::istream& operator>>(std::istream&, RealNumber&);
 	
-	// devuelve 0 si los números son iguales, 1 si el primero es mayor al segundo
-	// y -1 si el primero es menor al segundo
-	friend int16_t compare(const RealNumber&, const RealNumber&);
-	
-	// sobrecargas del operador de igualdad
+	// equality overloads
 	friend bool operator==(const std::int64_t, const RealNumber&);
 	friend bool operator==(const std::string&, const RealNumber&);
 	
-	// sobrecargas del operador de desigualdad
+	// inequality overloads
 	friend bool operator!=(const std::int64_t, const RealNumber&);
 	friend bool operator!=(const std::string&, const RealNumber&);
 	
-	// sobrecargas del operador menor que
+	// less than overloads
 	friend bool operator<(const std::int64_t, const RealNumber&);
 	friend bool operator<(const std::string&, const RealNumber&);
 	
-	// sobrecargas del operador menor o igual que
+	// less than or equal overloads
 	friend bool operator<=(const std::int64_t, const RealNumber&);
-	friend bool operator<=(const std::string&, const RealNumber);
+	friend bool operator<=(const std::string&, const RealNumber&);
 	
-	// sobrecargas del operador mayor que
+	// greater than overloads
 	friend bool operator>(const std::int64_t, const RealNumber&);
 	friend bool operator>(const std::string&, const RealNumber&);
 	
-	// sobrecargas del operador mayor o igual que
+	// greater than or equal overloads
 	friend bool operator>=(const std::int64_t, const RealNumber&);
-	friend bool operator>=(const std::string&, const RealNumber);
-	
-	// sobrecargas del operator+
-	friend RealNumber operator+(const std::int64_t, const RealNumber&);
-	friend RealNumber operator+(const std::string&, const RealNumber&);
-	
-	// sobrecargas del operator-
-	friend RealNumber operator-(const std::int64_t, const RealNumber&);
-	friend RealNumber operator-(const std::string&, const RealNumber&);
+	friend bool operator>=(const std::string&, const RealNumber&);
 	
 	private:
-		// contiene los dígitos del número real
-		std::deque<uint16_t> digits;
-		// signo del número real
+		std::deque<std::uint16_t> digits;
 		std::int16_t sign;
-		// cantidad de dígitos después del punto decimal
-		std::size_t scale;
-		// cantidad máxima de dígitos después del punto decimal
-		static std::size_t maxScale;
+		std::size_t precision;	// amount of digits after decimal point
 		
-		// elimina ceros innecesarios al comienzo y final del número real
-		void trimRealNumber();
+		// removes unneeded zeros
+		void trim();
+		
+		/*
+		Compares the numbers ignoring their signs
+		
+		Returns 1 if the first number is greater than the second,
+		0 if they are equal, and -1 if the first is less than the
+		second
+		*/
+		static std::int16_t compare(const RealNumber&, const RealNumber&);
 		
 	public:
-		// constructores
 		RealNumber();
 		RealNumber(const std::int64_t);
 		RealNumber(const std::string&);
 		RealNumber(const RealNumber&);
 		
-		// destructor
 		~RealNumber();
 		
-		// sobrecargas del operador de asignación
-		const RealNumber& operator=(const RealNumber&);
+		// assignment overloads
 		const RealNumber& operator=(const std::int64_t);
 		const RealNumber& operator=(const std::string&);
+		const RealNumber& operator=(const RealNumber&);
 		
-		// retorna un string que representa al número real
-		std::string toString() const ;
+		// returns the amount of digits before the decimal point
+		std::size_t getMantissa() const ;
 		
-		// devuelve la cantidad total de dígitos del número real
+		// returns the amout of digits after the decimal point
 		std::size_t getPrecision() const ;
 		
-		// devuelve la cantidad total de dígitos después del punto decimal
-		std::size_t getScale() const ;
-		
-		// devuelve el número redondeado a la cantidad de dígitos especificada
-		// de dígitos
-		RealNumber round(const std::size_t) const ;
-		
-		// modifica la cantidad máxima de dígitos después del punto decimal
-		static void setMaxScale(const std::size_t);
-		
-		// devuelve el número real positivo más pequeño posible con la
-		// escala pasada como parámetro
-		static RealNumber getSmallest(const std::size_t);
-		
-		
-		// sobrecarga del operador de igualdad
+		// equality overload
 		bool operator==(const RealNumber&) const ;
 		
-		// sobrecarga del operador de desigualdad
+		// inequality overload
 		bool operator!=(const RealNumber&) const ;
 		
-		// sobrecarga del operador menor que
-		bool operator<(const RealNumber&) const;
+		// less than overload
+		bool operator<(const RealNumber&) const ;
 		
-		// sobrecarga del operador menor o igual que
+		// less than or equal overload
 		bool operator<=(const RealNumber&) const ;
 		
-		// sobrecarga del operador mayor que
+		// greater than overload
 		bool operator>(const RealNumber&) const ;
 		
-		// sobrecarga del operador mayor o igual que
+		// greater than or equal overload
 		bool operator>=(const RealNumber&) const ;
-		
-		// devuelve una copia del valor absoluto del número
-		RealNumber absolute() const ;
-		
-		// devuelve una copia del opuesto del número
-		RealNumber operator-() const ;
-		
-		// devuelve la suma de dos números
-		RealNumber operator+(const RealNumber&) const ;
-		
-		// devuelve la resta de dos números
-		RealNumber operator-(const RealNumber&) const ;
-		
-		// suma con asignación
-		const RealNumber& operator+=(const RealNumber&);
-		const RealNumber& operator+=(const std::int64_t);
-		const RealNumber& operator+=(const std::string&);
-		
-		// resta con asignación
-		const RealNumber& operator-=(const RealNumber&);
-		const RealNumber& operator-=(const std::int64_t);
-		const RealNumber& operator-=(const std::string&);
 };
 
 #endif

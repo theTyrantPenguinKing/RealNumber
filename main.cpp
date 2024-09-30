@@ -1,21 +1,40 @@
-#include <iostream>
 #include "realnumber.hpp"
+#include <iostream>
 
 using namespace std;
 
 int main(){
-	RealNumber r, s, suma;
+	RealNumber num1, num2;
 	
-	cout << "Ingrese un número real: ";
-	cin >> r;
+	std::cout << "Enter a real number: ";
+	cin >> num1;
 	
-	cout << "Ingrese otro número real: ";
-	cin >> s;
+	std::cout << "Enter another real number: ";
+	cin >> num2;
 	
-	suma = r + s;
-	cout << r << " + " << s << " = " << suma << endl;
+	if(num1 == num2){
+		cout << num1 << " == " << num2 << endl;
+	}
 	
-	cout << "Número redondeado a dos dígitos después del punto decimal: " << suma.round(2) << std::endl;
+	if(num1 != num2){
+		cout << num1 << " != " << num2 << endl;
+	}
+	
+	if(num1 < num2){
+		cout << num1 << " < " << num2 << endl;
+	}
+	
+	if(num1 <= num2){
+		cout << num1 << " <= " << num2 << endl;
+	}
+	
+	if(num1 > num2){
+		cout << num1 << " > " << num2 << endl;
+	}
+	
+	if(num1 >= num2){
+		cout << num1 << " >= " << num2 << endl;
+	}
 	
 	return 0;
 }
