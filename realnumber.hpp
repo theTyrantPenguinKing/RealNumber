@@ -54,6 +54,19 @@ class RealNumber{
 		*/
 		static std::int16_t compare(const RealNumber&, const RealNumber&);
 		
+		/* return the addition of the numbers
+		
+		PRE: the numbers have the same precision
+		*/
+		static RealNumber addition(const RealNumber&, const RealNumber&);
+		
+		/* returns the subtraction of the numbers
+		
+		PRE: the absolute value of the first number is greater than or equal
+		to the absolute value of the second number and have the same precision
+		*/
+		static RealNumber subtraction(const RealNumber&, const RealNumber&);
+		
 	public:
 		RealNumber();
 		RealNumber(const std::int64_t);
@@ -90,6 +103,15 @@ class RealNumber{
 		
 		// greater than or equal overload
 		bool operator>=(const RealNumber&) const ;
+		
+		// returns the opposite of the number
+		RealNumber operator-() const ;
+		
+		// returns the sum of the two numbers
+		RealNumber operator+(const RealNumber&) const ;
+		
+		// returns the subtraction of the two numbers
+		RealNumber operator-(const RealNumber&) const ;
 };
 
 #endif
