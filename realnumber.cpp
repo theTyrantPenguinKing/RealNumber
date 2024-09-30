@@ -245,6 +245,126 @@ bool RealNumber::operator>=(const RealNumber& num) const {
 	return gteq;
 }
 
+RealNumber RealNumber::operator-() const {
+	RealNumber r = *this;
+	r.sign *= -1;
+	return r;
+}
+
+RealNumber RealNumber::operator+(const RealNumber& num) const {
+	RealNumber res, a = *this, b = num;
+	
+	while(a.precision < b.precision){
+		a.digits.push_back(0);
+		a.precision++;
+	}
+	while(b.precision < a.precision){
+		b.digits.push_back(0);
+		b.precision++;
+	}
+	
+	std::int16_t cmp = RealNumber::compare(a, b);
+	
+	if(a.sign == 0){
+		res = num;
+	}else if(b.sign == 0){
+		res = *this;
+	}else if(a.sign == 1 && b.sign == 1){
+		res = RealNumber::addition(a, b);
+		res.sign = 1;
+		res.precision = (this->precision > num.precision ? this->precision : num.precision);
+	}else if(a.sign == 1 && b.sign == -1){
+		if(cmp == 1){
+			res = RealNumber::subtraction(a, b);
+			res.sign = 1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else if(cmp == -1){
+			res = RealNumber::subtraction(b, a);
+			res.sign = -1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else{
+			res = 0;
+		}
+	}else if(a.sign == -1 && b.sign == 1){
+		if(cmp == 1){
+			res = RealNumber::subtraction(a, b);
+			res.sign = -1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else if(cmp == -1){
+			res = RealNumber::subtraction(b, a);
+			res.sign = 1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else{
+			res = 0;
+		}
+	}else{
+		res = RealNumber::addition(a, b);
+		res.sign = -1;
+		res.precision = (this->precision > num.precision ? this->precision : num.precision);
+	}
+	
+	res.trim();
+	return res;
+}
+
+RealNumber RealNumber::operator-(const RealNumber& num) const {
+	RealNumber res, a = *this, b = num;
+	
+	while(a.precision < b.precision){
+		a.digits.push_back(0);
+		a.precision++;
+	}
+	while(b.precision < a.precision){
+		b.digits.push_back(0);
+		b.precision++;
+	}
+	
+	std::int16_t cmp = RealNumber::compare(a, b);
+	
+	if(a.sign == 0){
+		res = num;
+		res.sign = -1;
+	}else if(b.sign == 0){
+		res = *this;
+	}else if(a.sign == 1 && b.sign == 1){
+		if(cmp == 1){
+			res = RealNumber::subtraction(a, b);
+			res.sign = 1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else if(cmp == -1){
+			res = RealNumber::subtraction(b, a);
+			res.sign = -1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else{
+			res = 0;
+		}
+	}else if(a.sign == 1 && b.sign == -1){
+		res = RealNumber::addition(a, b);
+		res.sign = 1;
+		res.precision = (this->precision > num.precision ? this->precision : num.precision);
+	}else if(a.sign == -1 && b.sign == 1){
+		res = RealNumber::addition(a, b);
+		res.sign = -1;
+		res.precision = (this->precision > num.precision ? this->precision : num.precision);
+	}else{
+		if(cmp == 1){
+			res = RealNumber::subtraction(a, b);
+			res.sign = -1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else if(cmp == -1){
+			res = RealNumber::subtraction(b, a);
+			res.sign = 1;
+			res.precision = (this->precision > num.precision ? this->precision : num.precision);
+		}else{
+			res = 0;
+		}
+	}
+	
+	res.trim();
+	
+	return res;
+}
+
 /******************************************************************************
 PRIVATE METHODS
 ******************************************************************************/
@@ -310,6 +430,107 @@ std::int16_t RealNumber::compare(const RealNumber& n1, const RealNumber& n2){
 	}
 	
 	return cmp;
+}
+
+RealNumber RealNumber::addition(const RealNumber& n1, const RealNumber& n2){
+	std::deque<std::uint16_t>::const_reverse_iterator it1, it2;
+	RealNumber res;
+	res.digits.clear();
+		
+	std::uint16_t carry = 0, val;
+	
+	it1 = n1.digits.rbegin();
+	it2 = n2.digits.rbegin();
+	
+	for(; it1 != n1.digits.rend() && it2 != n2.digits.rend(); it1++, it2++){
+		val = *it1 + *it2 + carry;
+		if(val > 9){
+			carry = 1;
+			val %= 10;
+		}else{
+			carry = 0;
+		}
+		
+		res.digits.push_front(val);
+	}
+	
+	for(; it1 != n1.digits.rend(); it1++){
+		val = *it1 + carry;
+		if(val > 9){
+			carry = 1;
+			val %= 10;
+		}else{
+			carry = 0;
+		}
+		
+		res.digits.push_front(val);
+	}
+	
+	for(; it2 != n2.digits.rend(); it2++){
+		val = *it2 + carry;
+		if(val > 9){
+			carry = 1;
+			val %= 10;
+		}else{
+			carry = 0;
+		}
+		
+		res.digits.push_front(val);
+	}
+	
+	if(carry){
+		res.digits.push_front(carry);
+	}
+	
+	return res;
+}
+
+RealNumber RealNumber::subtraction(const RealNumber& n1, const RealNumber& n2){
+	std::deque<std::uint16_t>::const_reverse_iterator it1, it2;
+	RealNumber res;
+	res.digits.clear();
+	
+	std::uint16_t val, carry = 0;
+	std::int16_t a, b;
+	
+	it1 = n1.digits.rbegin();
+	it2 = n2.digits.rbegin();
+	
+	for(; it1 != n1.digits.rend() && it2 != n2.digits.rend(); it1++, it2++){
+		a = (std::int16_t)*it1;
+		b = (std::int16_t)*it2;
+		
+		a -= carry;
+		
+		if(a >= b){
+			val = a - b;
+			carry = 0;
+		}else{
+			a += 10;
+			val = a - b;
+			carry = 1;
+		}
+		res.digits.push_front(val);
+	}
+	
+	for(; it1 != n1.digits.rend(); it1++){
+		a = (std::int16_t)*it1;
+		b = 0;
+		
+		a -= carry;
+		
+		if(a >= b){
+			val = a - b;
+			carry = 0;
+		}else{
+			a += 10;
+			val = a - b;
+			carry = 1;
+		}
+		res.digits.push_front(val);
+	}
+	
+	return res;
 }
 
 /******************************************************************************
