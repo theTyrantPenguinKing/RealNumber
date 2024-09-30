@@ -1,2 +1,2 @@
-Implementación en C++ de una clase para representar números reales con cualquier cantidad de dígitos que se desee, sin pérdida de precisión.
-Estado: En Desarrollo
+C++ implementation of a class that represents real numbers with any amount of digits without precision loss.
+Status: In development.
