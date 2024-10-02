@@ -8,109 +8,69 @@
 #include <iterator>
 #include <cctype>
 
+#include "rn_utils.hpp"
+
 class RealNumber{
+	// input/output overload
 	friend std::ostream& operator<<(std::ostream&, const RealNumber&);
-	
 	friend std::istream& operator>>(std::istream&, RealNumber&);
 	
-	// equality overloads
+	// relational operators overloads
 	friend bool operator==(const std::int64_t, const RealNumber&);
 	friend bool operator==(const std::string&, const RealNumber&);
-	
-	// inequality overloads
 	friend bool operator!=(const std::int64_t, const RealNumber&);
 	friend bool operator!=(const std::string&, const RealNumber&);
-	
-	// less than overloads
 	friend bool operator<(const std::int64_t, const RealNumber&);
 	friend bool operator<(const std::string&, const RealNumber&);
-	
-	// less than or equal overloads
-	friend bool operator<=(const std::int64_t, const RealNumber&);
-	friend bool operator<=(const std::string&, const RealNumber&);
-	
-	// greater than overloads
 	friend bool operator>(const std::int64_t, const RealNumber&);
 	friend bool operator>(const std::string&, const RealNumber&);
-	
-	// greater than or equal overloads
+	friend bool operator<=(const std::int64_t, const RealNumber&);
+	friend bool operator<=(const std::string&, const RealNumber&);
 	friend bool operator>=(const std::int64_t, const RealNumber&);
 	friend bool operator>=(const std::string&, const RealNumber&);
 	
 	private:
-		std::deque<std::uint16_t> digits;
+		// deque containing the digits of the number
+		std::deque<std::int16_t> digits;
+		// sign of the number
 		std::int16_t sign;
-		std::size_t precision;	// amount of digits after decimal point
+		// amount of digits after the decimal point
+		std::size_t precision;
 		
-		// removes unneeded zeros
+		// removes leading and trailing zeros
 		void trim();
-		
-		/*
-		Compares the numbers ignoring their signs
-		
-		Returns 1 if the first number is greater than the second,
-		0 if they are equal, and -1 if the first is less than the
-		second
-		*/
-		static std::int16_t compare(const RealNumber&, const RealNumber&);
-		
-		/* return the addition of the numbers
-		
-		PRE: the numbers have the same precision
-		*/
-		static RealNumber addition(const RealNumber&, const RealNumber&);
-		
-		/* returns the subtraction of the numbers
-		
-		PRE: the absolute value of the first number is greater than or equal
-		to the absolute value of the second number and have the same precision
-		*/
-		static RealNumber subtraction(const RealNumber&, const RealNumber&);
-		
 	public:
+		// constructors
 		RealNumber();
 		RealNumber(const std::int64_t);
 		RealNumber(const std::string&);
 		RealNumber(const RealNumber&);
 		
+		// destructor
 		~RealNumber();
 		
-		// assignment overloads
 		const RealNumber& operator=(const std::int64_t);
 		const RealNumber& operator=(const std::string&);
 		const RealNumber& operator=(const RealNumber&);
 		
-		// returns the amount of digits before the decimal point
-		std::size_t getMantissa() const ;
-		
-		// returns the amout of digits after the decimal point
-		std::size_t getPrecision() const ;
-		
-		// equality overload
+		// relational operators overload
 		bool operator==(const RealNumber&) const ;
-		
-		// inequality overload
 		bool operator!=(const RealNumber&) const ;
-		
-		// less than overload
 		bool operator<(const RealNumber&) const ;
-		
-		// less than or equal overload
-		bool operator<=(const RealNumber&) const ;
-		
-		// greater than overload
 		bool operator>(const RealNumber&) const ;
-		
-		// greater than or equal overload
+		bool operator<=(const RealNumber&) const ;
 		bool operator>=(const RealNumber&) const ;
 		
 		// returns the opposite of the number
 		RealNumber operator-() const ;
 		
-		// returns the sum of the two numbers
+		// returns the absolute value of the number
+		RealNumber absolute() const ;
+		
+		// returns the sum of the numbers
 		RealNumber operator+(const RealNumber&) const ;
 		
-		// returns the subtraction of the two numbers
+		// returns the subtraction of the numbers
 		RealNumber operator-(const RealNumber&) const ;
 };
 

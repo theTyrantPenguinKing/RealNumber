@@ -4,19 +4,22 @@
 using namespace std;
 
 int main(){
-	RealNumber num1, num2;
+	RealNumber num1, num2, sum, subt;
 	
-	std::cout << "Enter a real number: ";
+	cout << "Enter a real number: ";
 	cin >> num1;
 	
-	std::cout << "Enter another real number: ";
+	cout << "Enter another real number: ";
 	cin >> num2;
 	
-	cout << num1 << " + " << num2 << " = " << num1 + num2 << endl;
+	sum = num1 + num2;
+	cout << num1 << " + " << num2 << " = " << sum << endl;
 	
-	cout << num1 << " - " << num2 << " = " << num1 - num2 << endl;
+	subt = num1 - num2;
+	cout << num1 << " - " << num2 << " = " << subt << endl;
 	
-	cout << num2 << " - " << num1 << " = " << num2 - num1 << endl;
+	subt = num2 - num1;
+	cout << num2 << " - " << num1 << " = " << subt << endl;
 	
 	return 0;
 }
