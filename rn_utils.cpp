@@ -1,5 +1,7 @@
 #include "rn_utils.hpp"
 
+#include <iostream>
+
 std::int16_t compare(const std::deque<std::int16_t>& num1,
 const std::deque<std::int16_t>& num2){
 	
@@ -35,15 +37,6 @@ const std::deque<std::int16_t>& num2){
 	}
 	
 	return cmp;
-}
-
-std::deque<std::int16_t> removeLeadingZeros(const std::deque<std::int16_t>& num){
-	std::deque<std::int16_t> res = num;
-	while(res.size() > 1 && res.front() == 0){
-		res.pop_front();
-	}
-	
-	return res;
 }
 
 void split(const std::deque<std::int16_t>& num, std::deque<std::int16_t>& left,
@@ -171,6 +164,10 @@ const std::deque<std::int16_t>& num2){
 	
 	result.push_front(0);
 	
+	if(num1.empty() || num2.empty()){
+		return result;
+	}
+	
 	for(it2 = num2.rbegin(); it2 != num2.rend(); it2++, shift++){
 		for(std::size_t s = 0; s < shift; s++){
 			aux.push_front(0);
@@ -196,7 +193,7 @@ const std::deque<std::int16_t>& num2){
 		aux.clear();
 	}
 	
-	return removeLeadingZeros(result);
+	return result;
 }
 
 std::deque<std::int16_t> karatsuba(const std::deque<std::int16_t>& num1,
@@ -229,7 +226,6 @@ const std::deque<std::int16_t>& num2){
 		z1 = karatsuba(right1, right2);
 		z2 = subtraction(karatsuba(addition(left1, right1), addition(left2, right2)),
 		addition(z0, z1));
-		
 		for(std::size_t i = 0; i < 2 * m; i++){
 			z0.push_back(0);
 		}
@@ -238,7 +234,7 @@ const std::deque<std::int16_t>& num2){
 			z2.push_back(0);
 		}
 		
-		res = removeLeadingZeros(addition(z0, addition(z1, z2)));
+		res = addition(z0, addition(z1, z2));
 		return res;
 	}
 }
