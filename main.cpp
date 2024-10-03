@@ -12,15 +12,6 @@ int main(){
 	cout << "Enter another real number: ";
 	cin >> num2;
 	
-	sum = num1 + num2;
-	cout << num1 << " + " << num2 << " = " << sum << endl;
-	
-	subt = num1 - num2;
-	cout << num1 << " - " << num2 << " = " << subt << endl;
-	
-	subt = num2 - num1;
-	cout << num2 << " - " << num1 << " = " << subt << endl;
-	
 	prod = num1 * num2;
 	cout << num1 << " x " << num2 << " = " << prod << endl;
 	

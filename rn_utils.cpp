@@ -37,6 +37,33 @@ const std::deque<std::int16_t>& num2){
 	return cmp;
 }
 
+std::deque<std::int16_t> removeLeadingZeros(const std::deque<std::int16_t>& num){
+	std::deque<std::int16_t> res = num;
+	while(res.size() > 1 && res.front() == 0){
+		res.pop_front();
+	}
+	
+	return res;
+}
+
+void split(const std::deque<std::int16_t>& num, std::deque<std::int16_t>& left,
+std::deque<std::int16_t>& right){
+	left.clear();
+	right.clear();
+	
+	std::deque<std::int16_t>::const_iterator it, halfIter;
+	it = num.begin();
+	halfIter = num.begin();
+	std::advance(halfIter, num.size() / 2);
+	
+	for(; it != halfIter; it++){
+		left.push_back(*it);
+	}
+	for(; it != num.end(); it++){
+		right.push_back(*it);
+	}
+}
+
 std::deque<std::int16_t> addition(const std::deque<std::int16_t>& num1,
 const std::deque<std::int16_t>& num2){
 	std::deque<std::int16_t> result;
@@ -169,5 +196,49 @@ const std::deque<std::int16_t>& num2){
 		aux.clear();
 	}
 	
-	return result;
+	return removeLeadingZeros(result);
+}
+
+std::deque<std::int16_t> karatsuba(const std::deque<std::int16_t>& num1,
+const std::deque<std::int16_t>& num2){
+	if(num1.size() == 1 || num2.size() == 1){
+		return multiply(num1, num2);
+	}else{
+		std::deque<std::int16_t> n1 = num1, n2 = num2;
+		std::deque<std::int16_t> left1, right1, left2, right2;
+		std::deque<std::int16_t> z0, z1, z2, res;
+		std::size_t size = std::max(num1.size(), num2.size());
+		std::size_t m = size / 2 + size % 2;
+		
+		while(n1.size() < n2.size()){
+			n1.push_front(0);
+		}
+		while(n2.size() < n1.size()){
+			n2.push_front(0);
+		}
+		
+		if(n1.size() % 2 != 0){
+			n2.push_front(0);
+			n1.push_front(0);
+		}
+		
+		split(n1, left1, right1);
+		split(n2, left2, right2);
+		
+		z0 = karatsuba(left1, left2);
+		z1 = karatsuba(right1, right2);
+		z2 = subtraction(karatsuba(addition(left1, right1), addition(left2, right2)),
+		addition(z0, z1));
+		
+		for(std::size_t i = 0; i < 2 * m; i++){
+			z0.push_back(0);
+		}
+		
+		for(std::size_t i = 0; i < m; i++){
+			z2.push_back(0);
+		}
+		
+		res = removeLeadingZeros(addition(z0, addition(z1, z2)));
+		return res;
+	}
 }
