@@ -4,7 +4,7 @@
 using namespace std;
 
 int main(){
-	RealNumber num1, num2, sum, subt;
+	RealNumber num1, num2, sum, subt, prod;
 	
 	cout << "Enter a real number: ";
 	cin >> num1;
@@ -20,6 +20,9 @@ int main(){
 	
 	subt = num2 - num1;
 	cout << num2 << " - " << num1 << " = " << subt << endl;
+	
+	prod = num1 * num2;
+	cout << num1 << " x " << num2 << " = " << prod << endl;
 	
 	return 0;
 }

@@ -358,6 +358,17 @@ RealNumber RealNumber::operator-(const RealNumber& num) const {
 	return res;
 }
 
+RealNumber RealNumber::operator*(const RealNumber& num) const {
+	RealNumber res;
+	
+	res.digits = multiply(this->digits, num.digits);
+	res.sign = this->sign * num.sign;
+	res.precision = this->precision + num.precision;
+	
+	res.trim();
+	return res;
+}
+
 /******************************************************************************
 PRIVATE METHODS
 ******************************************************************************/

@@ -72,6 +72,9 @@ class RealNumber{
 		
 		// returns the subtraction of the numbers
 		RealNumber operator-(const RealNumber&) const ;
+		
+		// returns the product of the numbers
+		RealNumber operator*(const RealNumber&) const ;
 };
 
 #endif

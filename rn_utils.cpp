@@ -134,3 +134,40 @@ const std::deque<std::int16_t>& num2){
 	
 	return result;
 }
+
+std::deque<std::int16_t> multiply(const std::deque<std::int16_t>& num1,
+const std::deque<std::int16_t>& num2){
+	std::deque<std::int16_t> result, aux;
+	std::deque<std::int16_t>::const_reverse_iterator it1, it2;
+	std::int16_t val, carry = 0;
+	std::size_t shift = 0;
+	
+	result.push_front(0);
+	
+	for(it2 = num2.rbegin(); it2 != num2.rend(); it2++, shift++){
+		for(std::size_t s = 0; s < shift; s++){
+			aux.push_front(0);
+		}
+		for(it1 = num1.rbegin(); it1 != num1.rend(); it1++){
+			val = *it1 * *it2 + carry;
+			if(val > 9){
+				carry = val / 10;
+				val %= 10;
+			}else{
+				carry = 0;
+			}
+			aux.push_front(val);
+		}
+		
+		if(carry){
+			aux.push_front(carry);
+			carry = 0;
+		}
+		
+		result = addition(aux, result);
+		
+		aux.clear();
+	}
+	
+	return result;
+}

@@ -30,4 +30,10 @@ PRE: the numbers have the same amount of digits after decimal point
 std::deque<std::int16_t> subtraction(const std::deque<std::int16_t>&,
 const std::deque<std::int16_t>&);
 
+/*
+Returns the multiplication of the two numbers
+*/
+std::deque<std::int16_t> multiply(const std::deque<std::int16_t>&,
+const std::deque<std::int16_t>&);
+
 #endif
