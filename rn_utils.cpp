@@ -196,35 +196,39 @@ const std::deque<std::int16_t>& num2){
 	return result;
 }
 
-std::deque<std::int16_t> karatsuba(const std::deque<std::int16_t>& num1,
-const std::deque<std::int16_t>& num2){
+std::deque<std::int16_t> karatsuba(std::deque<std::int16_t>& num1,
+std::deque<std::int16_t>& num2){
 	if(num1.size() == 1 || num2.size() == 1){
 		return multiply(num1, num2);
 	}else{
-		std::deque<std::int16_t> n1 = num1, n2 = num2;
 		std::deque<std::int16_t> left1, right1, left2, right2;
+		std::deque<std::int16_t> sum1, sum2;
 		std::deque<std::int16_t> z0, z1, z2, res;
 		std::size_t size = std::max(num1.size(), num2.size());
 		std::size_t m = size / 2 + size % 2;
 		
-		while(n1.size() < n2.size()){
-			n1.push_front(0);
+		while(num1.size() < num2.size()){
+			num1.push_front(0);
 		}
-		while(n2.size() < n1.size()){
-			n2.push_front(0);
-		}
-		
-		if(n1.size() % 2 != 0){
-			n2.push_front(0);
-			n1.push_front(0);
+		while(num2.size() < num1.size()){
+			num2.push_front(0);
 		}
 		
-		split(n1, left1, right1);
-		split(n2, left2, right2);
+		if(num1.size() % 2 != 0){
+			num2.push_front(0);
+			num1.push_front(0);
+		}
+		
+		split(num1, left1, right1);
+		split(num2, left2, right2);
 		
 		z0 = karatsuba(left1, left2);
 		z1 = karatsuba(right1, right2);
-		z2 = subtraction(karatsuba(addition(left1, right1), addition(left2, right2)),
+		
+		sum1 = addition(left1, right1);
+		sum2 = addition(left2, right2);
+		
+		z2 = subtraction(karatsuba(sum1, sum2),
 		addition(z0, z1));
 		for(std::size_t i = 0; i < 2 * m; i++){
 			z0.push_back(0);

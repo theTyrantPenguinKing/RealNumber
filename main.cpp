@@ -1,10 +1,11 @@
 #include "realnumber.hpp"
 #include <iostream>
+#include <chrono>
 
 using namespace std;
 
 int main(){
-	RealNumber num1, num2, sum, subt, prod;
+	RealNumber num1, num2, prod;
 	
 	cout << "Enter a real number: ";
 	cin >> num1;

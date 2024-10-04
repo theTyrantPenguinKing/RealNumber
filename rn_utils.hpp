@@ -51,7 +51,7 @@ const std::deque<std::int16_t>&);
 Returns the multiplication of the two numbers using karatsuba
 PRE: the numbers have the same amount of digits after decimal point
 */
-std::deque<std::int16_t> karatsuba(const std::deque<std::int16_t>&,
-const std::deque<std::int16_t>&);
+std::deque<std::int16_t> karatsuba(std::deque<std::int16_t>&,
+std::deque<std::int16_t>&);
 
 #endif
