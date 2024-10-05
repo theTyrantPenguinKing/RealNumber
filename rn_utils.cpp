@@ -198,7 +198,7 @@ const std::deque<std::int16_t>& num2){
 
 std::deque<std::int16_t> karatsuba(std::deque<std::int16_t>& num1,
 std::deque<std::int16_t>& num2){
-	if(num1.size() == 1 || num2.size() == 1){
+	if(num1.size() <= 16 || num2.size() <= 16){
 		return multiply(num1, num2);
 	}else{
 		std::deque<std::int16_t> left1, right1, left2, right2;
