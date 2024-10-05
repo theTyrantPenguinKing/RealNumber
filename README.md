@@ -3,7 +3,7 @@ Status: In development.
 
 Current and future features:
 	+ Addition/Subtraction of real numbers
-	+ Fast Multiplication of real numbers using Karatsuba Algorithm
+	+ Multiplication of real numbers
 	- Division of real numbers
 	- Some math functions (sin, cos, tan, log, e^x, a^x, sqrt, ...)
 	- Different rounding methods

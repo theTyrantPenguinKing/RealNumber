@@ -169,76 +169,31 @@ const std::deque<std::int16_t>& num2){
 	}
 	
 	for(it2 = num2.rbegin(); it2 != num2.rend(); it2++, shift++){
-		for(std::size_t s = 0; s < shift; s++){
-			aux.push_front(0);
-		}
-		for(it1 = num1.rbegin(); it1 != num1.rend(); it1++){
-			val = *it1 * *it2 + carry;
-			if(val > 9){
-				carry = val / 10;
-				val %= 10;
-			}else{
+		if(*it2 != 0){
+			for(std::size_t s = 0; s < shift; s++){
+				aux.push_front(0);
+			}
+			for(it1 = num1.rbegin(); it1 != num1.rend(); it1++){
+				val = *it1 * *it2 + carry;
+				if(val > 9){
+					carry = val / 10;
+					val %= 10;
+				}else{
+					carry = 0;
+				}
+				aux.push_front(val);
+			}
+			
+			if(carry){
+				aux.push_front(carry);
 				carry = 0;
 			}
-			aux.push_front(val);
+			
+			result = addition(aux, result);
+			
+			aux.clear();
 		}
-		
-		if(carry){
-			aux.push_front(carry);
-			carry = 0;
-		}
-		
-		result = addition(aux, result);
-		
-		aux.clear();
 	}
 	
 	return result;
-}
-
-std::deque<std::int16_t> karatsuba(std::deque<std::int16_t>& num1,
-std::deque<std::int16_t>& num2){
-	if(num1.size() <= 16 || num2.size() <= 16){
-		return multiply(num1, num2);
-	}else{
-		std::deque<std::int16_t> left1, right1, left2, right2;
-		std::deque<std::int16_t> sum1, sum2;
-		std::deque<std::int16_t> z0, z1, z2, res;
-		std::size_t size = std::max(num1.size(), num2.size());
-		std::size_t m = size / 2 + size % 2;
-		
-		while(num1.size() < num2.size()){
-			num1.push_front(0);
-		}
-		while(num2.size() < num1.size()){
-			num2.push_front(0);
-		}
-		
-		if(num1.size() % 2 != 0){
-			num2.push_front(0);
-			num1.push_front(0);
-		}
-		
-		split(num1, left1, right1);
-		split(num2, left2, right2);
-		
-		z0 = karatsuba(left1, left2);
-		z1 = karatsuba(right1, right2);
-		
-		sum1 = addition(left1, right1);
-		sum2 = addition(left2, right2);
-		
-		z2 = subtraction(karatsuba(sum1, sum2),
-		addition(z0, z1));
-		for(std::size_t i = 0; i < 2 * m; i++){
-			z0.push_back(0);
-		}
-		
-		for(std::size_t i = 0; i < m; i++){
-			z2.push_back(0);
-		}
-		
-		res = addition(z0, addition(z1, z2));
-		return res;
-	}
 }
