@@ -155,6 +155,16 @@ const std::deque<std::int16_t>& num2){
 	return result;
 }
 
+std::deque<std::int16_t> multiply10(const std::deque<std::int16_t> num,
+const std::size_t amount){
+	std::deque<std::int16_t> result = num;
+	
+	for(std::size_t i = 0; i < amount; i++){
+		result.push_back(0);
+	}
+	return result;
+}
+
 std::deque<std::int16_t> multiply(const std::deque<std::int16_t>& num1,
 const std::deque<std::int16_t>& num2){
 	std::deque<std::int16_t> result, aux;
@@ -196,4 +206,41 @@ const std::deque<std::int16_t>& num2){
 	}
 	
 	return result;
+}
+
+const std::deque<std::int16_t> karatsuba(const std::deque<std::int16_t>& num1,
+const std::deque<std::int16_t>& num2){
+	if(num1.size() == 1 || num2.size() == 1){
+		return multiply(num1, num2);
+	}
+	
+	std::deque<std::int16_t> n1 = num1, n2 = num2;
+	std::deque<std::int16_t> a, b, c, d;
+	std::deque<std::int16_t> z0, z1, z2, res;
+	std::size_t size, multiplier;
+	
+	size = std::max(num1.size(), num2.size());
+	multiplier = size / 2 + size % 2;
+	
+	while(n1.size() < n2.size()){
+		n1.push_front(0);
+	}
+	while(n2.size() < n1.size()){
+		n2.push_front(0);
+	}
+	
+	split(n1, a, b);
+	split(n2, c, d);
+	
+	z0 = karatsuba(a, c);
+	z1 = karatsuba(b, d);
+	z2 = karatsuba(addition(a, b), addition(c, d));
+	
+	z2 = subtraction(z2, addition(z0, z1));
+	
+	z0 = multiply10(z0, 2 * multiplier);
+	z2 = multiply10(z2, multiplier);
+	
+	res = addition(z0, addition(z1, z2));
+	return res;
 }

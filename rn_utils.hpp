@@ -42,9 +42,24 @@ std::deque<std::int16_t> subtraction(const std::deque<std::int16_t>&,
 const std::deque<std::int16_t>&);
 
 /*
+Multiplies the number by ten the specified amount of times and returns its
+result
+*/
+std::deque<std::int16_t> multiply10(const std::deque<std::int16_t>,
+const std::size_t);
+
+/*
 Returns the multiplication of the two numbers
 */
 std::deque<std::int16_t> multiply(const std::deque<std::int16_t>&,
+const std::deque<std::int16_t>&);
+
+/*
+Returns the multiplication of the numbers using Karatsuba algorithm
+
+PRE: the numbers have the same amount of digits after decimal point
+*/
+const std::deque<std::int16_t> karatsuba(const std::deque<std::int16_t>&,
 const std::deque<std::int16_t>&);
 
 #endif
