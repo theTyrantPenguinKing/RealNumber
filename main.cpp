@@ -13,6 +13,5 @@ int main(){
 	
 	prod = num1 * num2;
 	cout << num1 << " x " << num2 << " = " << prod << endl;
-	
 	return 0;
 }

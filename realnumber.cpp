@@ -370,7 +370,12 @@ RealNumber RealNumber::operator*(const RealNumber& num) const {
 		b.precision++;
 	}
 	
-	res.digits = karatsuba(a.digits, b.digits);
+	if(a.digits.size() <= 64 || b.digits.size() <= 64){
+		res.digits = multiply(a.digits, b.digits);
+	}else{
+		res.digits = karatsuba(a.digits, b.digits);
+	}
+	
 	res.sign = a.sign * b.sign;
 	res.precision = a.precision + b.precision;
 	
