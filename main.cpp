@@ -5,7 +5,6 @@ using namespace std;
 
 int main(){
 	RealNumber num1, num2, prod;
-	
 	cout << "Enter a real number: ";
 	cin >> num1;
 	
