@@ -29,6 +29,18 @@ class RealNumber{
 	friend bool operator>=(const std::int64_t, const RealNumber&);
 	friend bool operator>=(const std::string&, const RealNumber&);
 	
+	// addition overloads
+	friend RealNumber operator+(std::int64_t, const RealNumber&);
+	friend RealNumber operator+(std::string&, const RealNumber&);
+	
+	// subtraction overloads
+	friend RealNumber operator-(const std::int64_t, const RealNumber&);
+	friend RealNumber operator-(const std::string&, const RealNumber&);
+	
+	// multiplication overloads
+	friend RealNumber operator*(const std::int64_t, const RealNumber&);
+	friend RealNumber operator*(const std::string&, const RealNumber&);
+	
 	private:
 		// deque containing the digits of the number
 		std::deque<std::int16_t> digits;
@@ -75,6 +87,21 @@ class RealNumber{
 		
 		// returns the product of the numbers
 		RealNumber operator*(const RealNumber&) const ;
+		
+		// assigment addition
+		const RealNumber& operator+=(const RealNumber&);
+		const RealNumber& operator+=(const std::int64_t);
+		const RealNumber& operator+=(const std::string&);
+		
+		// assignment subtraction
+		const RealNumber& operator-=(const RealNumber&);
+		const RealNumber& operator-=(const std::int64_t);
+		const RealNumber& operator-=(const std::string&);
+		
+		// assignment multiplication
+		const RealNumber& operator*=(const RealNumber&);
+		const RealNumber& operator*=(const std::int64_t);
+		const RealNumber& operator*=(const std::string&);
 };
 
 #endif

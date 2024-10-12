@@ -378,6 +378,42 @@ RealNumber RealNumber::operator*(const RealNumber& num) const {
 	return res;
 }
 
+const RealNumber& RealNumber::operator+=(const RealNumber& num){
+	return *this = *this + num;
+}
+
+const RealNumber& RealNumber::operator+=(const std::int64_t num){
+	return *this = *this + num;
+}
+
+const RealNumber& RealNumber::operator+=(const std::string& num){
+	return *this = *this + num;
+}
+
+const RealNumber& RealNumber::operator-=(const RealNumber& num){
+	return *this = *this - num;
+}
+
+const RealNumber& RealNumber::operator-=(const std::int64_t num){
+	return *this = *this - num;
+}
+
+const RealNumber& RealNumber::operator-=(const std::string& num){
+	return *this = *this - num;
+}
+
+const RealNumber& RealNumber::operator*=(const RealNumber& num){
+	return *this = *this * num;
+}
+
+const RealNumber& RealNumber::operator*=(const std::int64_t num){
+	return *this = *this * num;
+}
+
+const RealNumber& RealNumber::operator*=(const std::string& num){
+	return *this = *this * num;
+}
+
 /******************************************************************************
 PRIVATE METHODS
 ******************************************************************************/
@@ -486,4 +522,28 @@ bool operator>=(const std::int64_t num1, const RealNumber& num2){
 
 bool operator>=(const std::string& num1, const RealNumber& num2){
 	return RealNumber(num1) >= num2;
+}
+
+RealNumber operator+(const std::int64_t num1, const RealNumber& num2){
+	return RealNumber(num1) + num2;
+}
+
+RealNumber operator+(const std::string& num1, const RealNumber& num2){
+	return RealNumber(num1) + num2;
+}
+
+RealNumber operator-(const std::int64_t num1, const RealNumber& num2){
+	return RealNumber(num1) - num2;
+}
+
+RealNumber operator-(const std::string& num1, const RealNumber& num2){
+	return RealNumber(num1) - num2;
+}
+
+RealNumber operator*(const std::int64_t num1, const RealNumber& num2){
+	return RealNumber(num1) * num2;
+}
+
+RealNumber operator*(const std::string& num1, const RealNumber& num2){
+	return RealNumber(num1) * num2;
 }
