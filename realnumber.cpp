@@ -361,21 +361,7 @@ RealNumber RealNumber::operator-(const RealNumber& num) const {
 RealNumber RealNumber::operator*(const RealNumber& num) const {
 	RealNumber res, a = *this, b = num;
 	
-	while(a.precision < b.precision){
-		a.digits.push_back(0);
-		a.precision++;
-	}
-	while(b.precision < a.precision){
-		b.digits.push_back(0);
-		b.precision++;
-	}
-	
-	if(a.digits.size() <= 64 || b.digits.size() <= 64){
-		res.digits = multiply(a.digits, b.digits);
-	}else{
-		res.digits = karatsuba(a.digits, b.digits);
-	}
-	
+	res.digits = multiply(a.digits, b.digits);
 	res.sign = a.sign * b.sign;
 	res.precision = a.precision + b.precision;
 	
