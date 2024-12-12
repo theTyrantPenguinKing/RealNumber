@@ -16,11 +16,29 @@ class RealNumber{
 	// stream extraction overload
 	friend std::istream& operator>>(std::istream&, RealNumber&);
 	
-	// equality overload
+	// equality overloads
 	friend bool operator==(const std::string&, const RealNumber&);
+	friend bool operator==(const char*, const RealNumber&);
 	
-	// inequality overload
+	// inequality overloads
 	friend bool operator!=(const std::string&, const RealNumber&);
+	friend bool operator!=(const char*, const RealNumber&);
+	
+	// less than overloads
+	friend bool operator<(const std::string&, const RealNumber&);
+	friend bool operator<(const char*, const RealNumber&);
+	
+	// greater than overloads
+	friend bool operator>(const std::string&, const RealNumber&);
+	friend bool operator>(const char*, const RealNumber&);
+	
+	// less than or equal to overloads
+	friend bool operator<=(const std::string&, const RealNumber&);
+	friend bool operator<=(const char*, const RealNumber&);
+	
+	// greater than or equal to overloads
+	friend bool operator>=(const std::string&, const RealNumber&);
+	friend bool operator>=(const char*, const RealNumber&);
 	
 	private:
 		// digits before decimal point
@@ -81,8 +99,11 @@ class RealNumber{
 		// converts the real number to a string
 		std::string toString() const ;
 		
-		// conversion overloads
-		operator std::string() const {return toString(); }
+		// gets the precision of the real number
+		std::size_t getPrecision() const ;
+		
+		// gets the scale of the real number
+		std::size_t getScale() const ;
 		
 		// sets the maximum scale
 		static void setMaxScale(const std::size_t);
