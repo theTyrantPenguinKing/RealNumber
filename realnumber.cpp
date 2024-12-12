@@ -37,6 +37,7 @@ const RealNumber& RealNumber::operator=(const RealNumber& num){
 
 const RealNumber& RealNumber::operator=(const std::string& str){
 	auto iter = str.begin();
+	int64_t exponent;
 	
 	this->integer_digits.clear();
 	this->scale_digits.clear();
@@ -68,6 +69,25 @@ const RealNumber& RealNumber::operator=(const std::string& str){
 		iter++;
 		for(; iter != str.end() && isdigit(*iter); iter++){
 			this->scale_digits.push_back(*iter - '0');
+		}
+	}
+	
+	if(iter != str.end() && tolower(*iter) == 'e'){
+		iter++;
+		
+		if(iter != str.end()){
+			std::size_t pos = std::distance(str.begin(), iter);
+			exponent = (int64_t)atoll(str.substr(pos).c_str());
+			
+			int64_t i = 0;
+			while(i < exponent){
+				*this = this->multiply10();
+				i++;
+			}
+			while(i > exponent){
+				*this = this->divide10();
+				i--;
+			}
 		}
 	}
 	
@@ -151,6 +171,46 @@ void RealNumber::removeZeros(){
 	if(this->integer_digits.empty()){
 		this->integer_digits.push_back(0);
 	}
+}
+
+RealNumber RealNumber::multiply10() const {
+	std::int16_t val;
+	RealNumber result = *this;
+	
+	if(result != "0"){
+		if(result.scale_digits.empty()){
+			result.integer_digits.push_back(0);
+		}else{
+			val = result.scale_digits.front();
+			result.scale_digits.pop_front();
+			result.integer_digits.push_back(val);
+		}
+	}
+	
+	result.removeZeros();
+	return result;
+}
+
+RealNumber RealNumber::divide10() const {
+	std::int16_t val;
+	RealNumber result = *this;
+	
+	if(result != "0"){
+		if(!result.integer_digits.empty()){
+			val = result.integer_digits.back();
+			result.integer_digits.pop_back();
+			if(result.integer_digits.empty()){
+				result.integer_digits.push_back(0);
+			}
+			result.scale_digits.push_front(val);
+		}else{
+			result.integer_digits.push_back(0);
+			result.scale_digits.push_front(0);
+		}
+	}
+	
+	result.removeZeros();
+	return result;
 }
 
 /******************************************************************************
