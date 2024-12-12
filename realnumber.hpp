@@ -6,8 +6,9 @@
 #include <cinttypes>
 #include <string>
 #include <cctype>
+#include <iterator>
 
-const std::size_t DEFAULT_SCALE = 9;
+const std::size_t DEFAULT_SCALE = 21;
 
 class RealNumber{
 	// stream insertion overload
@@ -55,6 +56,12 @@ class RealNumber{
 		
 		// removes leading and trailing zeros
 		void removeZeros();
+		
+		// multiplies the number by ten
+		RealNumber multiply10() const ;
+		
+		// divides the number by ten
+		RealNumber divide10() const ;
 		
 		/*
 		Compares two real numbers and returns:
@@ -106,7 +113,7 @@ class RealNumber{
 		std::size_t getScale() const ;
 		
 		// sets the maximum scale
-		static void setMaxScale(const std::size_t);
+		static void setMaxScale(const std::size_t = DEFAULT_SCALE);
 };
 
 #endif
