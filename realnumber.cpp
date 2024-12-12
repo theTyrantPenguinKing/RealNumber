@@ -123,6 +123,14 @@ std::string RealNumber::toString() const {
 	return res;
 }
 
+std::size_t RealNumber::getPrecision() const {
+	return this->integer_digits.size() + this->scale_digits.size();
+}
+
+std::size_t RealNumber::getScale() const {
+	return this->scale_digits.size();
+}
+
 /******************************************************************************
 PRIVATE METHODS
 ******************************************************************************/
@@ -165,8 +173,48 @@ bool operator==(const std::string& num1, const RealNumber& num2){
 	return RealNumber(num1) == num2;
 }
 
+bool operator==(const char* num1, const RealNumber& num2){
+	return RealNumber(num1) == num2;
+}
+
 bool operator!=(const std::string& num1, const RealNumber& num2){
 	return RealNumber(num1) != num2;
+}
+
+bool operator!=(const char* num1, const RealNumber& num2){
+	return RealNumber(num1) != num2;
+}
+
+bool operator<(const std::string& num1, const RealNumber& num2){
+	return RealNumber(num1) < num2;
+}
+
+bool operator<(const char* num1, const RealNumber& num2){
+	return RealNumber(num1) < num2;
+}
+
+bool operator>(const std::string& num1, const RealNumber& num2){
+	return RealNumber(num1) > num2;
+}
+
+bool operator>(const char* num1, const RealNumber& num2){
+	return RealNumber(num1) > num2;
+}
+
+bool operator<=(const std::string& num1, const RealNumber& num2){
+	return RealNumber(num1) <= num2;
+}
+
+bool operator<=(const char* num1, const RealNumber& num2){
+	return RealNumber(num1) <= num2;
+}
+
+bool operator>=(const std::string& num1, const RealNumber& num2){
+	return RealNumber(num1) >= num2;
+}
+
+bool operator>=(const char* num1, const RealNumber& num2){
+	return RealNumber(num1) >= num2;
 }
 
 /******************************************************************************
